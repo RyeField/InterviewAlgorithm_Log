@@ -1,6 +1,10 @@
 package sj.leetcode;
 
+import jdk.nashorn.internal.ir.ReturnNode;
+
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author: Jian Shi
@@ -11,7 +15,7 @@ import java.util.Arrays;
 public class LeetCode {
     public static void main(String[] args) {
         //for testing usage
-        System.out.println(longestPalindrome2("babcd"));
+
     }
 
     //1. Two Sum
@@ -377,6 +381,133 @@ public class LeetCode {
         }
         return R - L - 1;
     }
-    
+
+    //6. ZigZag Conversion
+    public static String convert(String s, int numRows) {
+        int length = s.length();
+        if (numRows == 1) {
+            return s;
+        }
+        StringBuilder conversedS = new StringBuilder();
+        int sectionLength = 2 * numRows - 2;
+        int sections = length / sectionLength;
+        // scan row by row
+        for (int i = 0; i < numRows; i++) {
+            //first row and last row do not have inner column
+            if (i == 0 || i == numRows - 1) {
+                for (int j = 0; j <= sections; j++) {
+                    int index = i + j * sectionLength;
+                    if (index < length) {
+                        conversedS.append(s.charAt(index));
+                    }
+                }
+            } else {
+                for (int j = 0; j <= sections; j++) {
+                    // main row location
+                    int firIndex = i + j * sectionLength;
+                    // inner row location
+                    int sedIndex = sectionLength - i + j * sectionLength;
+                    if (firIndex < length) {
+                        conversedS.append(s.charAt(firIndex));
+                    }
+                    if (sedIndex < length) {
+                        conversedS.append(s.charAt(sedIndex));
+                    }
+                }
+            }
+        }
+        return conversedS.toString();
+    }
+
+    //7. Reverse Integer
+    public static int reverse(int x) {
+        if (x == 0) return 0;
+        int posX = Math.abs(x);
+        StringBuilder sb = new StringBuilder();
+        while (posX > 0) {
+            sb.append(posX % 10);
+            posX /= 10;
+        }
+        int res = 0;
+        try {
+            res = Integer.parseInt(sb.toString());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+        return x >= 0 ? res : -res;
+    }
+
+    //8. String to Integer (atoi)
+    // Used regular expression (need import in Matcher and Pattern in leetcode)
+    public static int myAtoi(String str) {
+        if (str.trim().length() == 0) {
+            return 0;
+        }
+        String regx = "[+|\\-]?[0-9]+";
+        Pattern pattern = Pattern.compile(regx);
+        Matcher matcher = pattern.matcher(str);
+        int conInt = 0;
+        while (matcher.find()) {
+            String res = matcher.group();
+            //the substring should be the start of the trimmed string
+            if (str.trim().indexOf(res) != 0) {
+                return 0;
+            }
+            try {
+                conInt = Integer.parseInt(res);
+            } catch (NumberFormatException e) {
+                if (res.substring(0, 1).equals("-")) {
+                    conInt = Integer.MIN_VALUE;
+                } else {
+                    conInt = Integer.MAX_VALUE;
+                }
+            }
+            //only return the first matched string
+            break;
+        }
+        return conInt;
+    }
+
+    //9. Palindrome Number
+    //Have written similar function in 5th problem.
+    //9.1 convert to StringBuilder and use built-in function
+    public static boolean isPalindrome1(int x) {
+        StringBuilder sb = new StringBuilder(String.valueOf(x));
+        return sb.toString().equals(sb.reverse().toString());
+    }
+
+    //9.2 convert to String and check from matched index pair.
+    public static boolean isPalindrome2(int x) {
+        String s = String.valueOf(x);
+        int start = 0;
+        int end = s.length() - 1;
+        while (start < end) {
+            if (s.charAt(start++) != s.charAt(end--)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //9.3 Remain integer (copied from solution)
+    public static boolean isPalindrome3(int x) {
+        if (x < 0 || (x % 10 == 0 && x != 0)) {
+            return false;
+        }
+
+        int revertedNumber = 0;
+        while (x > revertedNumber) {
+            revertedNumber = revertedNumber * 10 + x % 10;
+            x /= 10;
+        }
+
+        return x == revertedNumber || x == revertedNumber / 10;
+    }
+
+    //10. Regular Expression Matching
+    public boolean isMatch(String s, String p) {
+        return false;
+    }
 }
+
 
