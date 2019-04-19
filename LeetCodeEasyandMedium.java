@@ -1,6 +1,8 @@
 package sj.leetcode;
 
-import java.util.Arrays;
+import sun.awt.SunHints;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +19,7 @@ public class LeetCodeEasyandMedium {
     }
 
     //1. Two Sum
-    public static int[] twoSum(int[] nums, int target) {
+    public static int[] _1_twoSum(int[] nums, int target) {
         int[] numsCopy = nums.clone();
         //sort the array and find the target
         Arrays.sort(numsCopy);
@@ -62,7 +64,7 @@ public class LeetCodeEasyandMedium {
 
     //2. Add Two Numbers
     // (could be refactor and more concise)
-    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    public static ListNode _2_addTwoNumbers(ListNode l1, ListNode l2) {
         int tens = 0;
         ListNode head;
         ListNode cur = new ListNode(0);
@@ -141,7 +143,7 @@ public class LeetCodeEasyandMedium {
     }
 
     //3. Longest Substring Without Repeating Characters
-    public static int lengthOfLongestSubstring(String s) {
+    public static int _3_lengthOfLongestSubstring(String s) {
         int maxLength = 0;
         int pointer1 = 0;
         int pointer2 = 0;
@@ -165,7 +167,7 @@ public class LeetCodeEasyandMedium {
 
     //5. Longest Palindromic Substring
     //5.1 Brute Force
-    public static String longestPalindrome1(String s) {
+    public static String _5_longestPalindrome1(String s) {
         int length = s.length();
         int longest = 0;
         String res = "";
@@ -193,7 +195,7 @@ public class LeetCodeEasyandMedium {
     }
 
     //5.2 Longest Common Substring
-    public static String longestPalindrome2(String s) {
+    public static String _5_longestPalindrome2(String s) {
         //String sReverse = new StringBuffer(s).reverse().toString();
         StringBuffer sReverse = new StringBuffer(s).reverse();
         //check the longestCommonSubstring between s and sReserve, however
@@ -262,7 +264,7 @@ public class LeetCodeEasyandMedium {
 
     //5.3 Expand Around Center
     // (copied from solution, faster than my previous solutions)
-    public static String longestPalindrome3(String s) {
+    public static String _5_longestPalindrome3(String s) {
         if (s == null || s.length() < 1) return "";
         int start = 0, end = 0;
         for (int i = 0; i < s.length(); i++) {
@@ -287,7 +289,7 @@ public class LeetCodeEasyandMedium {
     }
 
     //6. ZigZag Conversion
-    public static String convert(String s, int numRows) {
+    public static String _6_convert(String s, int numRows) {
         int length = s.length();
         if (numRows == 1) {
             return s;
@@ -324,7 +326,7 @@ public class LeetCodeEasyandMedium {
     }
 
     //7. Reverse Integer
-    public static int reverse(int x) {
+    public static int _7_reverse(int x) {
         if (x == 0) return 0;
         int posX = Math.abs(x);
         StringBuilder sb = new StringBuilder();
@@ -343,7 +345,7 @@ public class LeetCodeEasyandMedium {
 
     //8. String to Integer (atoi)
     // Used regular expression (need import "Matcher" and "Pattern" in leetcode)
-    public static int myAtoi(String str) {
+    public static int _8_myAtoi(String str) {
         if (str.trim().length() == 0) {
             return 0;
         }
@@ -375,13 +377,13 @@ public class LeetCodeEasyandMedium {
     //9. Palindrome Number
     //Have written similar function in 5th problem.
     //9.1 convert to StringBuilder and use built-in function
-    public static boolean isPalindrome1(int x) {
+    public static boolean _9_isPalindrome1(int x) {
         StringBuilder sb = new StringBuilder(String.valueOf(x));
         return sb.toString().equals(sb.reverse().toString());
     }
 
     //9.2 convert to String and check from matched index pair.
-    public static boolean isPalindrome2(int x) {
+    public static boolean _9_isPalindrome2(int x) {
         String s = String.valueOf(x);
         int start = 0;
         int end = s.length() - 1;
@@ -394,7 +396,7 @@ public class LeetCodeEasyandMedium {
     }
 
     //9.3 Remain integer (copied from solution)
-    public static boolean isPalindrome3(int x) {
+    public static boolean _9_isPalindrome3(int x) {
         if (x < 0 || (x % 10 == 0 && x != 0)) {
             return false;
         }
@@ -408,8 +410,184 @@ public class LeetCodeEasyandMedium {
         return x == revertedNumber || x == revertedNumber / 10;
     }
 
-    //
+    //11. Container With Most Water
+    //Skip the Brute-Force way(simply two for loop to find the max value)
+    //O(n) way of find the max value start from '0' and 'length-1'
+    //Basic idea: the max value is limited by the shorter lines
+    public static int _11_maxArea(int[] height) {
+        int pointer1 = 0;
+        int pointer2 = height.length - 1;
+        int max = 0;
+        int temp = 0;
+        while (pointer1 < pointer2) {
+            temp = (pointer2 - pointer1) * (Math.min(height[pointer1],
+                    height[pointer2]));
+            max = Math.max(temp, max);
+            if (height[pointer1] > height[pointer2]) {
+                pointer2--;
+            } else {
+                pointer1++;
+            }
+        }
+        return max;
+    }
 
+    //12. Integer to Roman
+    // silly and annoying way....by my own..
+    public static String _12_intToRoman1(int num) {
+        int thousand = num / 1000;
+        int thoudRemainder = num % 1000;
+        int hundred = thoudRemainder / 100;
+        int hundredRemainder = thoudRemainder % 100;
+        int ten = hundredRemainder / 10;
+        int tenRemainder = hundredRemainder % 10;
+
+        StringBuilder sb = new StringBuilder();
+        if (thousand >= 1) {
+            for (int i = 0; i < thousand; i++) {
+                sb.append("M");
+            }
+        }
+        if (hundred == 9) {
+            sb.append("CM");
+        } else if (hundred == 4) {
+            sb.append("CD");
+        } else if (hundred <= 3 && hundred >= 1) {
+            for (int i = 0; i < hundred; i++) {
+                sb.append("C");
+            }
+        } else if (hundred >= 5) {
+            sb.append("D");
+            for (int i = 5; i < hundred; i++) {
+                sb.append("C");
+            }
+        }
+        if (ten == 9) {
+            sb.append("XC");
+        } else if (ten == 4) {
+            sb.append("XL");
+        } else if (ten <= 3 && ten >= 1) {
+            for (int i = 0; i < ten; i++) {
+                sb.append("X");
+            }
+        } else if (ten >= 5) {
+            sb.append("L");
+            for (int i = 5; i < ten; i++) {
+                sb.append("X");
+            }
+        }
+        if (tenRemainder == 9) {
+            sb.append("IX");
+        } else if (tenRemainder == 4) {
+            sb.append("IV");
+        } else if (tenRemainder <= 3 && tenRemainder >= 1) {
+            for (int i = 0; i < tenRemainder; i++) {
+                sb.append("I");
+            }
+        } else if (tenRemainder >= 5) {
+            sb.append("V");
+            for (int i = 5; i < tenRemainder; i++) {
+                sb.append("I");
+            }
+        }
+        return sb.toString();
+    }
+
+    //Found a real brilliant and concise way of solving this problem in discuss
+    //using the same idea but much more simple way to write!!
+    public static String _12_intToRoman2(int num) {
+        String M[] = {"", "M", "MM", "MMM"};
+        String C[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        String X[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        String I[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        return M[num / 1000] + C[(num % 1000) / 100] + X[(num % 100) / 10] + I[num % 10];
+    }
+
+    //13. Roman to Integer
+    public static int _13_romanToInt(String s) {
+        int length = s.length();
+        int res = 0;
+        char cur;
+        char next;
+        Map<Character, Integer> all = new HashMap<>();
+        all.put('I', 1);
+        all.put('V', 5);
+        all.put('X', 10);
+        all.put('L', 50);
+        all.put('C', 100);
+        all.put('D', 500);
+        all.put('M', 1000);
+        for (int i = 0; i < length; i++) {
+            cur = s.charAt(i);
+            next = i + 1 < length ? s.charAt(i + 1) : 'n';
+            if (all.containsKey(next) && all.get(cur) < all.get(next)) {
+                res -= all.get(cur);
+            } else {
+                res += all.get(cur);
+            }
+        }
+        return res;
+    }
+
+    //14. Longest Common Prefix
+    public static String _14_longestCommonPrefix(String[] strs) {
+        if (strs.length == 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        int length = strs.length;
+        int index = 0;
+        char temp = ' ';
+        boolean loop = true;
+        while (loop) {
+            for (int i = 0; i < length; i++) {
+                if (strs[i].length() <= index) {
+                    loop = false;
+                    break;
+                }
+                if (i == 0) temp = strs[i].charAt(index);
+                if (temp != strs[i].charAt(index)) {
+                    loop = false;
+                    break;
+                }
+                if (i == length - 1) {
+                    index++;
+                    sb.append(temp);
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    //15. 3Sum
+    public static List<List<Integer>> _15_threeSum(int[] nums) {
+        Set<List<Integer>> res = new HashSet<>();
+        if (nums.length < 3) return new ArrayList<>(res);
+        Map<Integer, Integer> numsAndFreq = new HashMap<>();
+        for (int num : nums) {
+            numsAndFreq.put(num, numsAndFreq.getOrDefault(num, 0) + 1);
+        }
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                List<Integer> temp = new ArrayList<>();
+                int thirdKey = -nums[i] - nums[j];
+                if (numsAndFreq.containsKey(thirdKey)) {
+                    if ((thirdKey == nums[i] && thirdKey != nums[j] && numsAndFreq.get(thirdKey) >= 2)
+                            || (thirdKey == nums[j] && thirdKey != nums[i] && numsAndFreq.get(thirdKey) >= 2)
+                            || (thirdKey != nums[i] && thirdKey != nums[j] && nums[i] != nums[j])
+                            || (thirdKey == nums[i] && thirdKey == nums[j] && numsAndFreq.get(thirdKey) >= 3)
+                            || (thirdKey != nums[i] && nums[i] == nums[j] && numsAndFreq.get(nums[i]) >= 2)) {
+                        temp.add(nums[i]);
+                        temp.add(nums[j]);
+                        temp.add(thirdKey);
+                        Collections.sort(temp);
+                        res.add(temp);
+                    }
+                }
+            }
+        }
+        return new ArrayList<>(res);
+    }
 }
 
 
