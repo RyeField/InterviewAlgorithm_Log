@@ -9,24 +9,6 @@ package sj.leetcode;
 public class LeetCodeHard {
     public static void main(String[] args) {
 //         for testing purpose
-        System.out.println(isMatch("aaa", "a*a") + " true");
-        System.out.println(isMatch("aaa", "aaaa") + " false");
-        System.out.println(isMatch("aa", "ab*aa") + " false");
-        System.out.println(isMatch("aaa", "ab*a*c*a") + " true");
-        System.out.println(isMatch("aa", "abaa") + " false");
-        System.out.println(isMatch("aab", "c*a*b") + " true");
-        System.out.println(isMatch("a", ".*..a*") + " false");
-        System.out.println(isMatch("a", ".*.*.") + " true");
-        System.out.println(isMatch("a", "ab*a") + " false");
-        System.out.println(isMatch("ab", ".*.") + " true");
-        System.out.println(isMatch("aab", "b.*") + " false");
-        System.out.println(isMatch("", ".*") + " true");
-        System.out.println(isMatch("mississippi", "mis*is*ip*.") + " true");
-        System.out.println(isMatch("ab", ".*c") + " false");
-        System.out.println(isMatch("a", "ab*") + " true");
-        System.out.println(isMatch("bbbba", ".*a*a") + " true");
-        System.out.println(isMatch("abbbcd", "ab*bbbcd") + " true");
-        System.out.println(isMatch("aabcbcbcaccbcaabc", ".*a*aa*.*b*.c*.*a*") + " true");
     }
 
     // 4. Median of Two Sorted Arrays
