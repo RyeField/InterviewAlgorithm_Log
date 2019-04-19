@@ -1,7 +1,5 @@
 package sj.leetcode;
 
-import jdk.nashorn.internal.ir.ReturnNode;
-
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,7 +10,7 @@ import java.util.regex.Pattern;
  * @date: 12/04/2019 1:30 AM
  */
 
-public class LeetCode {
+public class LeetCodeEasyandMedium {
     public static void main(String[] args) {
         //for testing usage
 
@@ -163,100 +161,6 @@ public class LeetCode {
             maxLength = Math.max(length, maxLength);
         }
         return maxLength;
-    }
-
-    //4. Median of Two Sorted Arrays
-    public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        int nums1Length = nums1.length;
-        int nums2Length = nums2.length;
-        int totalLength = nums1Length + nums2Length;
-        double res = 0.0;
-        if (nums1Length == 0) {
-            return nums2Length % 2 == 0 ?
-                    (nums2[nums2Length / 2] + nums2[nums2Length / 2 - 1]) / 2.00 :
-                    nums2[nums2Length / 2];
-        } else if (nums2Length == 0) {
-            return nums1Length % 2 == 0 ?
-                    (nums1[nums1Length / 2] + nums1[nums1Length / 2 - 1]) / 2.00 :
-                    nums1[nums1Length / 2];
-        } else {
-            //first num1 size should be smaller than second num2 size
-            if (nums1Length > nums2Length) {
-                int[] temp = nums1;
-                nums1 = nums2;
-                nums2 = temp;
-            }
-            nums1Length = nums1.length;
-            nums2Length = nums2.length;
-            int low = 0;
-            int high = nums1Length;
-            double maxLeft = 0;
-            double minRight = 0;
-            while (low <= high) {
-                int firIndex = (low + high) / 2;
-                // Why use "+1" here in the sedIndex
-                // 1.1 If m + n is even, then split the elements evenly into
-                // the left and right part, so i + j = m + n - i - j.
-                // (Clearly the 1st middle number is in the left part and the
-                // 2nd middle number is in the right part), thus we have i =
-                // (m + n)/2 - j (1)
-                // 1.2 If m + n is odd, then put the median in the left part,
-                // so the number of elements in the left part is one more
-                // than that of elements in the right part. That's where + 1
-                // comes in the formula: i + j = m + n - i - j + 1.
-                // Thus we have j = (m + n + 1)/2 - i (2)
-                // Notice that if a number num is even, then num/2 = (num +
-                // 1)/2, for example 4/2 = (4 + 1)/2 = 2. So (m + n)/2 is
-                // equal to (m + n + 1)/2 in (1). Thus we can merge them to
-                // (2). That's the reason why we use j = (m + n + 1)/2 - i through our code.
-                int sedIndex = (nums1Length + nums2Length + 1) / 2 - firIndex;
-                // situation 1 firIndex is valid, but need larger index
-                //System.out.println("a"+firIndex);
-                if (firIndex < nums1Length && nums2[sedIndex - 1] > nums1[firIndex]) {
-                    low = firIndex + 1;
-                    // situation 2 firIndex is valid, but need smaller index
-                } else if (firIndex > 0 && nums1[firIndex - 1] > nums2[sedIndex]) {
-                    high = firIndex - 1;
-                    // situation 3 firIndex is alright, judge the max value of
-                    // left list
-                } else {
-                    // the first list do not have value in left part
-                    if (firIndex == 0) {
-                        maxLeft = nums2[sedIndex - 1];
-                        // the second list do not have value in the left part
-                    } else if (sedIndex == 0) {
-                        maxLeft = nums1[firIndex - 1];
-                        // have cross
-                    } else {
-                        maxLeft = Math.max(nums1[firIndex - 1],
-                                nums2[sedIndex - 1]);
-                    }
-                    //System.out.println(firIndex + " " + sedIndex);
-                    //find 2 index
-                    if (totalLength % 2 == 0) {
-                        //first list have no value in right part
-                        if (firIndex == nums1Length) {
-                            minRight = nums2[sedIndex];
-                            //second list do not have value in the right part
-                        } else if (sedIndex == nums2Length) {
-                            minRight = nums1[firIndex];
-                            // have cross
-                        } else {
-                            minRight = Math.min(nums1[firIndex],
-                                    nums2[sedIndex]);
-                        }
-                        //System.out.println(maxLeft + " " + minRight);
-                        res = (maxLeft + minRight) / 2;
-                        break;
-                    } else { // find 1 index
-                        res = maxLeft;
-                        break;
-                    }
-
-                }
-            }
-        }
-        return res;
     }
 
     //5. Longest Palindromic Substring
@@ -504,11 +408,8 @@ public class LeetCode {
         return x == revertedNumber || x == revertedNumber / 10;
     }
 
-    //10. Regular Expression Matching
-    public boolean isMatch(String s, String p) {
-        
-        return false;
-    }
+    //
+
 }
 
 
