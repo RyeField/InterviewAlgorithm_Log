@@ -2,9 +2,11 @@ package sj.leetcode;
 
 import sun.awt.SunHints;
 
+import javax.sound.midi.Soundbank;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author: Jian Shi
@@ -15,6 +17,8 @@ import java.util.regex.Pattern;
 public class LeetCodeEasyandMedium {
     public static void main(String[] args) {
         //for testing usage
+        System.out.println("------------Testing --------------");
+        System.out.println(_17_letterCombinations2("234"));
 
     }
 
@@ -560,7 +564,8 @@ public class LeetCodeEasyandMedium {
     }
 
     //15. 3Sum
-    public static List<List<Integer>> _15_threeSum(int[] nums) {
+    // slow way.. found faster and better way in discuss...
+    public static List<List<Integer>> _15_threeSum1(int[] nums) {
         Set<List<Integer>> res = new HashSet<>();
         if (nums.length < 3) return new ArrayList<>(res);
         Map<Integer, Integer> numsAndFreq = new HashMap<>();
@@ -588,6 +593,164 @@ public class LeetCodeEasyandMedium {
         }
         return new ArrayList<>(res);
     }
+
+    // better way in discussion and intelligent, complexity is O(n^2)
+    public static List<List<Integer>> _15_threeSum2(int[] nums) {
+        // sort the array from small to large
+        Arrays.sort(nums);
+        List<List<Integer>> res = new LinkedList<>();
+        // find all the possible first element in the array
+        for (int i = 0; i < nums.length - 2; i++) {
+            // once the element has been used, skip the element to find a
+            // another new different first element
+            if (i == 0 || (i > 0 && nums[i] != nums[i - 1])) {
+                // bio-directional 2 sum to find the another 2 elements
+                int lo = i + 1, hi = nums.length - 1, sum = 0 - nums[i];
+                while (lo < hi) {
+                    if (nums[lo] + nums[hi] == sum) {
+                        res.add(Arrays.asList(nums[i], nums[lo], nums[hi]));
+                        //skip the duplicates
+                        while (lo < hi && nums[lo] == nums[lo + 1]) lo++;
+                        while (lo < hi && nums[hi] == nums[hi - 1]) hi--;
+                        lo++;
+                        hi--;
+                    } else if (nums[lo] + nums[hi] < sum) lo++;
+                    else hi--;
+                }
+            }
+        }
+        return res;
+    }
+
+    //16. 3Sum Closest
+    public static int _16_threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int minDistance = Integer.MAX_VALUE;
+        int finalNum = 0;
+        for (int i = 0; i < nums.length - 2; i++) {
+            int cloest = 0;
+            int distance = 0;
+            int low = i + 1, high = nums.length - 1, new_target = target - nums[i];
+            while (low < high) {
+                if (nums[low] + nums[high] > new_target) {
+                    cloest = nums[low] + nums[high];
+                    high--;
+                } else if (nums[low] + nums[high] < new_target) {
+                    cloest = nums[low] + nums[high];
+                    low++;
+                } else {
+                    return target;
+                }
+                distance = Math.abs(new_target - cloest);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    finalNum = cloest + nums[i];
+                }
+            }
+        }
+        return finalNum;
+    }
+
+    //17 Letter Combinations of a Phone Number
+    // create the list with the full length of the final result, append each
+    // combination in the list until the end of the digits....not quite good..
+    public static List<String> _17_letterCombinations1(String digits) {
+        List<String> res = new ArrayList<>();
+        if(digits.isEmpty()) return res;
+        int count_4 = digits.length() - digits.replaceAll("9", "").length();
+        count_4 += (digits.length() - digits.replaceAll("7", "").length());
+        int count_3 = digits.length() - count_4;
+        char[][] alphabet = {{}, {}, {'a', 'b', 'c'}, {'d', 'e', 'f'}, {'g', 'h', 'i'},
+                {'j', 'k', 'l'}, {'m', 'n', 'o'}, {'p', 'q', 'r', 's'}, {'t', 'u', 'v'}, {'w', 'x',
+                'y', 'z'}};
+        int totalLength =
+                ((Double) (Math.pow(3, count_3) * Math.pow(4, count_4))).intValue();
+        //the time of duplication of one alpha in single loop
+        int curLength = totalLength;
+        StringBuffer[] sb = new StringBuffer[totalLength];
+        for (int i = 0; i < digits.length(); i++) {
+            int curDig = Character.getNumericValue(digits.charAt(i));
+            char[] curDigArr = alphabet[curDig];
+            if (curDig != 7 && curDig != 9) {
+                //single alpha, single loop times
+                curLength = curLength / 3;
+                if (i == 0) {
+                    for (int j = 0; j < 3; j++) {
+                        for (int k = 0; k < curLength; k++) {
+                            sb[j * curLength + k] =
+                                    new StringBuffer(String.valueOf(curDigArr[j]));
+                        }
+                    }
+                } else {
+                    //l -> how many loops for the alphas for current digit
+                    for (int l = 0; l < totalLength / (curLength * 3); l++) {
+                        //j -> for each alpha in the alphas list
+                        for (int j = 0; j < 3; j++) {
+                            //k-> each alpha should duplicate how many times
+                            // in one loop
+                            for (int k = 0; k < curLength; k++) {
+                                //loop_times * single_loop_length
+                                //+ current_looped_alphas
+                                //+ current_alpha_looped_time
+                                sb[l * curLength * 3 + j*curLength + k].append(curDigArr[j]);
+                            }
+                        }
+                    }
+                }
+            } else {
+                curLength = curLength / 4;
+                if (i == 0) {
+                    for (int j = 0; j < 4; j++) {
+                        for (int k = 0; k < curLength; k++) {
+                            sb[j * curLength + k] =
+                                    new StringBuffer(String.valueOf(curDigArr[j]));
+                        }
+                    }
+                } else {
+                    for (int l = 0; l < totalLength / (curLength * 4); l++) {
+                        for (int j = 0; j < 4; j++) {
+                            for (int k = 0; k < curLength; k++) {
+                                sb[l * curLength * 4 + j*curLength + k].append(curDigArr[j]);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        for (StringBuffer s : sb) {
+            res.add(s.toString());
+        }
+        return res;
+    }
+    // Using the queue to implement
+    public static List<String> _17_letterCombinations2(String digits) {
+        List<String> res = new ArrayList<>();
+        if(digits.isEmpty()) return res;
+        Queue<String> queue = new LinkedList<>();
+        char[][] alphabet = {{}, {}, {'a', 'b', 'c'}, {'d', 'e', 'f'}, {'g', 'h', 'i'},
+                {'j', 'k', 'l'}, {'m', 'n', 'o'}, {'p', 'q', 'r', 's'}, {'t', 'u', 'v'}, {'w', 'x',
+                'y', 'z'}};
+        int index = 0;
+        queue.add("");
+        while(queue.peek().length() != digits.length()){
+            String top = "";
+            if(!queue.isEmpty()){
+                top = queue.poll();
+                index = top.length();
+            }
+            int curDig = Character.getNumericValue(digits.charAt(index));
+            char[] curDigArr = alphabet[curDig];
+            for(char alpha: curDigArr){
+                queue.add(top+alpha);
+            }
+        }
+        res.addAll(queue);
+        return res;
+    }
+
+
+
 }
 
 
