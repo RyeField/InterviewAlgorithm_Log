@@ -1,12 +1,12 @@
 package sj.leetcode;
 
-import sun.awt.SunHints;
 
-import javax.sound.midi.Soundbank;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import sj.util.ListNode;
+import sj.util.TreeNode;
 
 /**
  * @author: Jian Shi
@@ -750,7 +750,11 @@ public class LeetCodeEasyandMedium {
     }
 
 
-
+    //18. 4Sum
+    //reduce k sum to k-1 sum until the 2 sum, using 2 sum to solve
+//    public static List<List<Integer>> _18_fourSum(int[] nums, int target) {
+//
+//    }
 }
 
 
