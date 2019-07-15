@@ -1,13 +1,12 @@
 package sj.jianzhi;
 
 
-import sj.unimelb.edu.au.Test;
 import sj.util.ListNode;
+import sj.util.RandomListNode;
 import sj.util.TreeNode;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * @author: Jian Shi
@@ -39,14 +38,27 @@ public class JianZhi {
 //        root2.left = node7;
 //        root2.right = node8;
 //        System.out.println(jz._15_HasSubtree(root1,root2));
-        int[][] test1={{1,2,3,4,5},{6,7,8,9,10},{11,12,13,14,15},{16,17,18,19,20}};
-        int[][] test2 = {{1},{2},{3},{4},{5}};
-        int[][] test3 = {{1,2},{3,4},{5,6},{7,8},{9,10}};
-        int[][] test4={{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
-        int[][] test5 = {{1,2,3,4,5}};
 
-        System.out.println(jz._17_printMatrix(test4));
+//        int[][] test1 = {{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}};
+//        int[][] test2 = {{1}, {2}, {3}, {4}, {5}};
+//        int[][] test3 = {{1, 2}, {3, 4}, {5, 6}, {7, 8}, {9, 10}};
+//        int[][] test4 = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+//        int[][] test5 = {{1, 2, 3, 4, 5}};
+//        System.out.println(jz._17_printMatrix(test4));
 
+//        int[] test1 = {1, 3, 2, 5, 7, 6, 4};
+//        System.out.println(jz._21_VerifySquenceOfBST(test1));
+
+        TreeNode root1 = new TreeNode(10);
+        TreeNode node1 = new TreeNode(5);
+        TreeNode node2 = new TreeNode(12);
+        TreeNode node3 = new TreeNode(4);
+        TreeNode node4 = new TreeNode(7);
+        root1.left = node1;
+        root1.right = node2;
+        node1.left = node3;
+        node1.right = node4;
+        System.out.println(jz._22_FindPath(root1, 22));
     }
 
     public void input() {
@@ -131,6 +143,7 @@ public class JianZhi {
             return null;
         }
     }
+
     public void findSubTree(List<Integer> in, List<Integer> pre,
                             TreeNode root) {
         List<Integer> leftin = new ArrayList<>();
@@ -194,6 +207,7 @@ public class JianZhi {
         }
         return cur;
     }
+
     //binary search的变形
     public int _6_minNumberInRotateArray_2(int[] array) {
         if (array.length == 0) return 0;
@@ -201,11 +215,11 @@ public class JianZhi {
         while (low < high) {
             int mid = (low + high) / 2;
             //cannot use left and mid here, by experiment.
-            if(array[mid] > array[high]){
+            if (array[mid] > array[high]) {
                 low = mid + 1;
-            }else if(array[mid] == array[high]){
+            } else if (array[mid] == array[high]) {
                 high = high - 1;
-            }else{
+            } else {
                 high = mid;
             }
         }
@@ -217,12 +231,12 @@ public class JianZhi {
         int fir = 1;
         int second = 1;
         int temp = 2;
-        if(n==0) {
+        if (n == 0) {
             return 0;
-        }else if(n<3){
+        } else if (n < 3) {
             return 1;
-        }else{
-            while (n>=3){
+        } else {
+            while (n >= 3) {
                 temp = fir + second;
                 fir = second;
                 second = temp;
@@ -237,12 +251,12 @@ public class JianZhi {
         int fir = 1;
         int sed = 2;
         int cur = 3;
-        if(target == 0){
+        if (target == 0) {
             return 0;
-        }else if(target < 3){
+        } else if (target < 3) {
             return target;
-        }else{
-            while(target>=3){
+        } else {
+            while (target >= 3) {
                 cur = fir + sed;
                 fir = sed;
                 sed = cur;
@@ -268,18 +282,20 @@ public class JianZhi {
 
         return result;
     }
+
     public int _9_JumpFloorII_1(int target) {
         int combination = 1;
-        for(int k = 1; k<target;k++){
+        for (int k = 1; k < target; k++) {
             combination +=
-                    factorial(target-1) / (factorial(k) * factorial(target-1-k));
+                    factorial(target - 1) / (factorial(k) * factorial(target - 1 - k));
         }
         return combination;
     }
+
     //永远都是之前的两倍，排列组合的证明 就是1里面的公式
     public int _9_JumpFloorII_2(int target) {
         int a = 1;
-        return a<<(target-1); //位运算
+        return a << (target - 1); //位运算
     }
 
     //斐波那契数列应用
@@ -287,12 +303,12 @@ public class JianZhi {
         int fir = 1;
         int sed = 2;
         int cur = 3;
-        if(target == 0){
+        if (target == 0) {
             return 0;
-        }else if(target < 3){
+        } else if (target < 3) {
             return target;
-        }else{
-            while(target>=3){
+        } else {
+            while (target >= 3) {
                 cur = fir + sed;
                 fir = sed;
                 sed = cur;
@@ -307,8 +323,8 @@ public class JianZhi {
 //        return Integer.toBinaryString(n).replace("0","").length();
 //        return Integer.bitCount(n);
         int count = 0, flag = 1;
-        for(int i = 0; i<32; i++){
-            if((n>>i & flag) == 1){
+        for (int i = 0; i < 32; i++) {
+            if ((n >> i & flag) == 1) {
                 count++;
             }
         }
@@ -319,50 +335,50 @@ public class JianZhi {
     public double _12_Power(double base, int exponent) {
         boolean flag = true;
         double res = 1;
-        if(exponent==0){
+        if (exponent == 0) {
             return 1;
-        }else if(exponent < 0){
+        } else if (exponent < 0) {
             flag = false;
             exponent = -exponent;
         }
-        while (exponent>0){
-            if((exponent & 1) == 1){
+        while (exponent > 0) {
+            if ((exponent & 1) == 1) {
                 res *= base;
             }
             base *= base;
-            exponent>>=1;
+            exponent >>= 1;
         }
-        return flag? res: 1/res;
+        return flag ? res : 1 / res;
     }
 
     //类似于插入排序，不然就是在建立一个数组存偶数放最后
-    public void _11_reOrderArray(int [] array) {
+    public void _11_reOrderArray(int[] array) {
         int min = 0;
-        for(int i = 0; i < array.length; i++){
-            if(array[i] % 2 == 1 && i > 0){
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] % 2 == 1 && i > 0) {
                 int temp = array[i];
-                for(int k = i; k>min; k--){
-                    array[k] = array[k-1];
+                for (int k = i; k > min; k--) {
+                    array[k] = array[k - 1];
                 }
                 array[min] = temp;
                 min++;
-            }else if (array[i] % 2 == 1 && i == 0){
+            } else if (array[i] % 2 == 1 && i == 0) {
                 min = 1;
             }
         }
     }
 
     //双指针，一个领先k步
-    public ListNode _12_FindKthToTail(ListNode head,int k) {
+    public ListNode _12_FindKthToTail(ListNode head, int k) {
         ListNode nodeFaster = head;
         ListNode nodeSlower = head;
         int index = 0;
-        while (nodeFaster.next!=null){
+        while (nodeFaster.next != null) {
             nodeFaster = nodeFaster.next;
-            if(index>=k) nodeSlower = nodeSlower.next;
+            if (index >= k) nodeSlower = nodeSlower.next;
             index++;
         }
-        return index<k ? null: nodeSlower;
+        return index < k ? null : nodeSlower;
     }
 
     //迭代解法，也可以递归。。不是太习惯。
@@ -370,7 +386,7 @@ public class JianZhi {
         ListNode pre = null;
         ListNode cur = head;
         ListNode next = head;
-        while(cur != null){
+        while (cur != null) {
             next = cur.next;
             cur.next = pre;
             pre = cur;
@@ -380,40 +396,40 @@ public class JianZhi {
     }
 
     //迭代解法
-    public ListNode _14_Merge(ListNode list1,ListNode list2) {
+    public ListNode _14_Merge(ListNode list1, ListNode list2) {
         ListNode head, cur;
-        if(list1 == null && list2 == null){
+        if (list1 == null && list2 == null) {
             return null;
-        }else if(list1 != null && list2 == null){
+        } else if (list1 != null && list2 == null) {
             return list1;
-        }else if(list1 == null){
+        } else if (list1 == null) {
             return list2;
-        }else{
-            if (list1.val < list2.val){
+        } else {
+            if (list1.val < list2.val) {
                 head = list1;
                 cur = list1;
                 list1 = list1.next;
-            }else{
+            } else {
                 head = list2;
                 cur = list2;
                 list2 = list2.next;
             }
         }
 
-        while(true){
-            if(list1!=null && list2!=null){
-                if(list1.val < list2.val){
+        while (true) {
+            if (list1 != null && list2 != null) {
+                if (list1.val < list2.val) {
                     cur.next = list1;
                     list1 = list1.next;
-                }else{
+                } else {
                     cur.next = list2;
                     list2 = list2.next;
                 }
                 cur = cur.next;
-            }else{
-                if(list1 == null){
+            } else {
+                if (list1 == null) {
                     cur.next = list2;
-                }else{
+                } else {
                     cur.next = list1;
                 }
                 break;
@@ -423,27 +439,29 @@ public class JianZhi {
     }
 
     //重新回顾了下 inOrder 和 levelOrder 的写法
-    public List<Integer> inOrder(TreeNode root){
+    public List<Integer> inOrder(TreeNode root) {
         List<Integer> pre = new ArrayList<>();
         inOrderHelper(root, pre);
         return pre;
     }
-    public void inOrderHelper(TreeNode root, List<Integer> pre){
-        if(root != null){
+
+    public void inOrderHelper(TreeNode root, List<Integer> pre) {
+        if (root != null) {
             inOrderHelper(root.left, pre);
             pre.add(root.val);
             inOrderHelper(root.right, pre);
         }
     }
-    public List<Integer> layerOrder(TreeNode root){
+
+    public List<Integer> layerOrder(TreeNode root) {
         List<Integer> layer = new ArrayList<>();
         Queue<TreeNode> nodes = new LinkedList<>();
         nodes.add(root);
-        while (!nodes.isEmpty()){
+        while (!nodes.isEmpty()) {
             TreeNode top = nodes.poll();
-            if(top.left!=null){
+            if (top.left != null) {
                 nodes.add(top.left);
-            }else if (top.right != null){
+            } else if (top.right != null) {
                 nodes.add(top.right);
             }
             layer.add(top.val);
@@ -451,42 +469,43 @@ public class JianZhi {
         return layer;
     }
 
-    public boolean _15_HasSubtree(TreeNode root1,TreeNode root2) {
-        if(root1 == null || root2 == null) return false;
+    public boolean _15_HasSubtree(TreeNode root1, TreeNode root2) {
+        if (root1 == null || root2 == null) return false;
         Queue<TreeNode> nodes1 = new LinkedList<>();
         nodes1.add(root1);
         //level order 来一层层扫下去每个node
-        while (!nodes1.isEmpty()){
+        while (!nodes1.isEmpty()) {
             TreeNode top = nodes1.poll();
-            if(top.left!=null){
+            if (top.left != null) {
                 nodes1.add(top.left);
-            }else if (top.right != null){
+            } else if (top.right != null) {
                 nodes1.add(top.right);
             }
             //如果node值一样，比较root2是不是和这个node下面所有的node一样
-            if(top.val == root2.val){
-                if(isSubtree(top, root2)){
+            if (top.val == root2.val) {
+                if (isSubtree(top, root2)) {
                     return true;
                 }
             }
         }
         return false;
     }
+
     //level order 一层层迭代比较node确定是否包含
-    public boolean isSubtree(TreeNode root1, TreeNode root2){
+    public boolean isSubtree(TreeNode root1, TreeNode root2) {
         Queue<TreeNode> nodes1 = new LinkedList<>();
         nodes1.add(root1);
         Queue<TreeNode> nodes2 = new LinkedList<>();
         nodes2.add(root2);
-        while (!nodes2.isEmpty()){
+        while (!nodes2.isEmpty()) {
             TreeNode top = nodes1.poll();
             TreeNode top2 = nodes2.poll();
-            if(top.val != top2.val){
+            if (top.val != top2.val) {
                 return false;
-            }else{
-                if (top.left!=null) nodes1.add(top.left);
+            } else {
+                if (top.left != null) nodes1.add(top.left);
                 if (top.right != null) nodes1.add(top.right);
-                if (top2.left!=null) nodes2.add(top2.left);
+                if (top2.left != null) nodes2.add(top2.left);
                 if (top2.right != null) nodes2.add(top2.right);
             }
         }
@@ -495,18 +514,18 @@ public class JianZhi {
 
     //数的递归的应用
     public void _16_Mirror(TreeNode root) {
-        if(root != null) {
-            if(root.left != null && root.right != null){
+        if (root != null) {
+            if (root.left != null && root.right != null) {
                 TreeNode temp = root.left;
                 root.left = root.right;
                 root.right = temp;
                 _16_Mirror(root.left);
                 _16_Mirror(root.right);
-            } else if (root.left != null){
+            } else if (root.left != null) {
                 root.right = root.left;
                 root.left = null;
                 _16_Mirror(root.right);
-            } else if (root.right != null){
+            } else if (root.right != null) {
                 root.left = root.right;
                 root.right = null;
                 _16_Mirror(root.left);
@@ -515,57 +534,173 @@ public class JianZhi {
     }
 
     //不断绕圈往里缩小，每到matrix的角，进行缩小边界
-    public ArrayList<Integer> _17_printMatrix(int [][] matrix) {
-        int maxRow = matrix.length-1;
-        int maxCol = matrix[0].length-1;
+    public ArrayList<Integer> _17_printMatrix(int[][] matrix) {
+        int maxRow = matrix.length - 1;
+        int maxCol = matrix[0].length - 1;
         int minRow = 0;
         int minCol = 0;
         ArrayList<Integer> res = new ArrayList<>();
-        while(true){
-            res.addAll(Arrays.stream(matrix[minRow], minCol, maxCol+1).boxed().collect(Collectors.toList()));
+        while (true) {
+            res.addAll(Arrays.stream(matrix[minRow], minCol, maxCol + 1).boxed().collect(Collectors.toList()));
             minRow++;
             for (int i = minRow; i <= maxRow; i++) {
                 int col1 = matrix[i][maxCol];
                 res.add(col1);
             }
             maxCol--;
-            if(minRow<= maxRow){
+            if (minRow <= maxRow) {
                 List<Integer> bottomRow = Arrays.stream(matrix[maxRow], minCol,
-                        maxCol+1).boxed().collect(Collectors.toList());
+                        maxCol + 1).boxed().collect(Collectors.toList());
                 Collections.reverse(bottomRow);
                 res.addAll(bottomRow);
                 maxRow--;
             }
-            if(minCol <= maxCol){
+            if (minCol <= maxCol) {
                 for (int i = maxRow; i >= minRow; i--) {
                     int col2 = matrix[i][minCol];
                     res.add(col2);
                 }
                 minCol++;
             }
-            if(minRow> maxRow) break;
-            if(minCol> maxCol) break;
+            if (minRow > maxRow) break;
+            if (minCol > maxCol) break;
         }
         return res;
     }
 
+    //辅助栈存储当前栈中最小值
     public class _18_MyStack {
 
         Stack<Integer> stack = new Stack<>();
+        Stack<Integer> minStack = new Stack<>();
+
         public void push(int node) {
             stack.push(node);
+            if (minStack.isEmpty()) {
+                minStack.push(node);
+            } else {
+                if (node < minStack.peek()) minStack.push(node);
+            }
         }
 
         public void pop() {
-
+            if (stack.peek() == minStack.peek()) minStack.pop();
+            stack.pop();
         }
 
         public int top() {
-
+            return stack.peek();
         }
 
         public int min() {
-
+            return minStack.peek();
         }
+    }
+
+    //辅助stack模拟pop过程
+    public boolean _19_IsPopOrder(int[] pushA, int[] popA) {
+        if (pushA.length == 0 || popA.length == 0) return false;
+        int index = 0;
+        Stack<Integer> auxStack = new Stack<>();
+        for (int i = 0; i < pushA.length; i++) {
+            auxStack.push(pushA[i]);
+            while (!auxStack.isEmpty() && auxStack.peek() == popA[index]) {
+                index++;
+                auxStack.pop();
+            }
+        }
+        return index == popA.length;
+    }
+
+    //一层层打印树，用Queue,弹出一个node，加入他的children
+    public ArrayList<Integer> _20_PrintFromTopToBottom(TreeNode root) {
+        ArrayList<Integer> res = new ArrayList<>();
+        Queue<TreeNode> nodes = new LinkedList<>();
+        if (root == null) return res;
+        nodes.add(root);
+        while (!nodes.isEmpty()) {
+            TreeNode cur = nodes.poll();
+            if (cur.left != null) {
+                nodes.add(cur.left);
+            }
+            if (cur.right != null) {
+                nodes.add(cur.right);
+            }
+            res.add(cur.val);
+        }
+        return res;
+    }
+
+    //递归解法
+    public boolean _21_VerifySquenceOfBST(int[] sequence) {
+        if (sequence.length == 0) return false;
+        if (sequence.length <= 2) return true;
+        return verifySquenceOfBSTHelper(sequence);
+    }
+
+    //最后一个元素是root，前半部分list小于root，后半部分list必须都大于root才是true
+    public boolean verifySquenceOfBSTHelper(int[] sequence) {
+        if (sequence.length <= 2) return true;
+        int curRoot = sequence[sequence.length - 1];
+        boolean shouldLarger = false;
+        int splitIndex = 0;
+        for (int i = 0; i < sequence.length - 1; i++) {
+            if (!shouldLarger && sequence[i] > curRoot) {
+                splitIndex = i;
+                shouldLarger = true;
+            }
+            if (shouldLarger && sequence[i] < curRoot) return false;
+        }
+        return verifySquenceOfBSTHelper(Arrays.copyOfRange(sequence, 0,
+                splitIndex)) & verifySquenceOfBSTHelper(Arrays.copyOfRange(sequence, splitIndex, sequence.length - 1));
+    }
+
+    //非递归解法，三个队列，BFS的思路，不断更新，符合条件的路径放入最后结果
+    //考虑路径长的放在前面，因为是BFS，所以每次拿到符合的路径，放在0位置
+    public ArrayList<ArrayList<Integer>> _22_FindPath(TreeNode root, int target) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+        if(root == null) return res;
+        Queue<ArrayList<Integer>> path = new LinkedList<>(); //记录路径
+        Queue<TreeNode> nodes = new LinkedList<>(); //记录节点
+        Queue<Integer> sum = new LinkedList<>(); //记录路径总和
+        ArrayList<Integer> initial = new ArrayList<>();
+        initial.add(root.val);
+        path.add(initial);
+        nodes.add(root);
+        sum.add(root.val);
+        while (!nodes.isEmpty()) {
+            int curLayerSize = nodes.size();
+            for (int i = 0; i < curLayerSize; i++) {
+                int preSum = sum.poll();
+                TreeNode preNode = nodes.poll();
+                ArrayList<Integer> prePath = path.poll();
+                if(preSum<target){
+                    if(preNode.left != null){
+                        nodes.add(preNode.left);
+                        sum.add(preSum+preNode.left.val);
+                        ArrayList<Integer> curPath = new ArrayList<>(prePath);
+                        curPath.add(preNode.left.val);
+                        path.add(curPath);
+                    }
+                    if(preNode.right != null){
+                        nodes.add(preNode.right);
+                        sum.add(preSum+preNode.right.val);
+                        ArrayList<Integer> curPath = new ArrayList<>(prePath);
+                        curPath.add(preNode.right.val);
+                        path.add(curPath);
+                    }
+                }else if (preSum == target){
+                    if(preNode.left == null && preNode.right == null){
+                        res.add(0,prePath);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+
+    public RandomListNode _23_Clone(RandomListNode pHead) {
+
     }
 }
