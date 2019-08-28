@@ -94,7 +94,6 @@ public class LeetCodeHard {
                         res = maxLeft;
                         break;
                     }
-
                 }
             }
         }
@@ -150,7 +149,7 @@ public class LeetCodeHard {
             }
         }
         // The testing matrix
-        for (int i = 0; i <= patternLength + 1; i++) {
+        /*for (int i = 0; i <= patternLength + 1; i++) {
             for (int j = 0; j <= stringLength + 1; j++) {
                 if (i == 0 && j == 0 || i == 0 && j == 1 || i == 1 && j == 0) {
                     System.out.print("0 ");
@@ -163,7 +162,7 @@ public class LeetCodeHard {
                 }
             }
             System.out.println();
-        }
+        }*/
 
         isMatched = lenMatrix[patternLength][stringLength] == stringLength + 1;
         return isMatched;

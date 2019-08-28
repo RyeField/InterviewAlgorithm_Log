@@ -30,7 +30,7 @@ public class TreeOperations {
         //System.out.println(inorderTraversal(root1));
         //System.out.println(levelOrder(root1));
 //        System.out.println(findComParent(root1, node3, node4).val);
-        System.out.println(postorderTraversal(reConstructBinaryTree(pre, in)));
+        System.out.println(postOrderTraversal(reConstructBinaryTree(pre, in)));
     }
 
     public static void printTree(TreeNode root) {
@@ -55,7 +55,7 @@ public class TreeOperations {
         }
     }
 
-    public static List<Integer> postorderTraversal(TreeNode root) {
+    public static List<Integer> postOrderTraversal(TreeNode root) {
         List<Integer> res = new ArrayList<>();
         poshelper(root, res);
         return res;
