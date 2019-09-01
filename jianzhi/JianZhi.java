@@ -19,17 +19,19 @@ public class JianZhi {
     public static void main(String[] args) {
         JianZhi jz = new JianZhi();
         //tree 1
-//        TreeNode root1 = new TreeNode(1);
-//        TreeNode node1 = new TreeNode(2);
-//        TreeNode node2 = new TreeNode(3);
-//        TreeNode node3 = new TreeNode(4);
-//        TreeNode node4 = new TreeNode(5);
-//        TreeNode node5 = new TreeNode(6);
-//        root1.left = node1;
-//        root1.right = node2;
-//        node1.left = node3;
-//        node1.right = node4;
-//        node4.left = node5;
+        TreeNode root1 = new TreeNode(1);
+        TreeNode node1 = new TreeNode(2);
+        TreeNode node2 = new TreeNode(3);
+        TreeNode node3 = new TreeNode(4);
+        TreeNode node4 = new TreeNode(5);
+        TreeNode node5 = new TreeNode(6);
+        TreeNode node6 = new TreeNode(7);
+        root1.left = node1;
+        root1.right = node2;
+        node1.left = node3;
+        node2.right = node4;
+        node3.left = node5;
+        node4.right = node6;
 //        //tree2
 //        TreeNode root2 = new TreeNode(1);
 //        TreeNode node7 = new TreeNode(2);
@@ -39,12 +41,11 @@ public class JianZhi {
 //        node7.left = node8;
 //        node7.right = node9;
 //        System.out.println(jz._17_HasSubtree(root1,root2));
-
+        System.out.println(jz._61_Serialize(root1));
+        System.out.println(jz._60_Print(jz._61_Deserialize(jz._61_Serialize(root1))));
 
 //        int[] test = {3, 3, 3, 3, 4, 5};
 //        System.out.println(jz._37_GetNumberOfK(test, 3));
-
-        System.out.println(jz._49_StrToInt("a33"));
     }
 
     public void input() {
@@ -53,20 +54,6 @@ public class JianZhi {
         while (sc.hasNextLine()) {
             next = sc.nextLine();
         }
-    }
-
-    public int test(ListNode head) {
-        Map<ListNode, Integer> seenNode = new HashMap<>();
-        int pos = 0;
-        while (head != null) {
-            if (seenNode.containsKey(head)) {
-                return seenNode.get(head);
-            }
-            head = head.next;
-            seenNode.put(head, pos);
-            pos++;
-        }
-        return -1;
     }
 
     //从左上角不断缩小最大列的限制，（其实从左下角最佳，小了向右，大了向上）
@@ -92,7 +79,7 @@ public class JianZhi {
 
     //直接用replace也可以。。不懂什么意义
     public String _2_replaceSpace(StringBuffer str) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
             char curChar = str.charAt(i);
             if (curChar == ' ') {
@@ -317,7 +304,7 @@ public class JianZhi {
         return count;
     }
 
-    //平方求幂exponentiating by squaring 或 快速幂 的思想
+    //平方求幂exponentiation by squaring 或 快速幂 的思想
     public double _12_Power(double base, int exponent) {
         boolean flag = true;
         double res = 1;
@@ -506,7 +493,7 @@ public class JianZhi {
         return true;
     }
 
-    //数的递归的应用
+    //树的递归的应用
     public void _18_Mirror(TreeNode root) {
         if (root != null) {
             if (root.left != null && root.right != null) {
@@ -580,7 +567,7 @@ public class JianZhi {
         }
 
         public void pop() {
-            if (stack.peek() == minStack.peek()) minStack.pop();
+            if (stack.peek().equals(minStack.peek())) minStack.pop();
             stack.pop();
         }
 
@@ -1553,7 +1540,7 @@ public class JianZhi {
      * Leetcode原题 https://leetcode.com/problems/regular-expression-matching/
      * 用动态规划解决
      */
-    public boolean _51_match(char[] str, char[] pattern) {
+    public boolean _52_match(char[] str, char[] pattern) {
         int stringLength = str.length;
         int patternLength = pattern.length;
         int[][] lenMatrix = new int[patternLength + 1][stringLength + 1];
@@ -1612,7 +1599,7 @@ public class JianZhi {
      * --解题思路--
      * 正则表达式
      */
-    public boolean _52_isNumeric(char[] str) {
+    public boolean _53_isNumeric(char[] str) {
         String s = String.valueOf(str);
         //Java中 \\ 才表示其他语言中的一个 \
         return s.matches("[+-]?\\d*(\\.\\d+)?([eE][-+]?\\d+)?");
@@ -1634,12 +1621,12 @@ public class JianZhi {
     Map<Character, Integer> map = new LinkedHashMap<>();
 
     //Insert one char from stringstream
-    public void _53_Insert(char ch) {
+    public void _54_Insert(char ch) {
         map.put(ch, map.getOrDefault(ch, 0) + 1);
     }
 
     //return the first appearance once char in current stringstream
-    public char _53_FirstAppearingOnce() {
+    public char _54_FirstAppearingOnce() {
         Iterator<Map.Entry<Character, Integer>> iterator =
                 map.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -1664,7 +1651,7 @@ public class JianZhi {
      * 则环前面的距离为数个环的长度加上当前慢指针离环入口的距离，所以在第一次相遇后，让慢指针
      * 继续走，同时在开始点也让一个和慢指针同样速度的指针开始走，他们最终相遇点即在环入口处。
      */
-    public ListNode _54_EntryNodeOfLoop(ListNode pHead) {
+    public ListNode _55_EntryNodeOfLoop(ListNode pHead) {
         if (pHead == null) return null;
         ListNode p1 = pHead;
         ListNode p2 = pHead;
@@ -1691,7 +1678,7 @@ public class JianZhi {
      * --解题思路--
      * 双指针思想，记录重复结点开始的index和结束的index，去除所有重复结点
      */
-    public ListNode _55_deleteDuplication(ListNode pHead) {
+    public ListNode _56_deleteDuplication(ListNode pHead) {
         if (pHead == null) return null;
         ListNode res = new ListNode(0);
         res.next = pHead;
@@ -1724,7 +1711,7 @@ public class JianZhi {
      * 2.当前节点没right child，找parent,且当前节点必须是这个parent的left child.不断
      * 递归找parent直到满足为left child或者不满足返回null
      */
-    public TreeLinkNode _56_GetNext(TreeLinkNode pNode) {
+    public TreeLinkNode _57_GetNext(TreeLinkNode pNode) {
         if (pNode.right != null) {
             pNode = pNode.right;
             while (pNode.left != null) {
@@ -1754,7 +1741,7 @@ public class JianZhi {
      * 1.递归
      * 2.迭代,BFS的思路，同一层镜像位置同时入队，同时出队
      */
-    boolean _57_isSymmetrical(TreeNode pRoot) {
+    boolean _58_isSymmetrical(TreeNode pRoot) {
         if (pRoot == null) return false;
         Queue<TreeNode> level = new LinkedList<>();
         level.offer(pRoot.left);
@@ -1790,7 +1777,7 @@ public class JianZhi {
      * 两个Stack分别存奇数和偶数行的节点，一层层的输出stack即可，遇到偶数行，先存当前节点
      * 的right child 再存 left child使输出顺序正常
      */
-    public ArrayList<ArrayList<Integer>> _58_Print(TreeNode pRoot) {
+    public ArrayList<ArrayList<Integer>> _59_Print(TreeNode pRoot) {
         ArrayList<ArrayList<Integer>> res = new ArrayList<>();
         if (pRoot == null) return res;
         //存偶数行的节点
@@ -1826,7 +1813,7 @@ public class JianZhi {
      * --解题思路--
      * 比上一题简单，用一个Queue做BFS的level Order
      */
-    public ArrayList<ArrayList<Integer>> _59_Print(TreeNode pRoot) {
+    public ArrayList<ArrayList<Integer>> _60_Print(TreeNode pRoot) {
         ArrayList<ArrayList<Integer>> res = new ArrayList<>();
         if (pRoot == null) return res;
         Queue<TreeNode> queue = new LinkedList<>();
@@ -1855,20 +1842,172 @@ public class JianZhi {
      * 二叉树的反序列化是指：根据某种遍历顺序得到的序列化字符串结果str，重构二叉树。
      * <p>
      * --解题思路--
+     * 用了层序遍历，将二叉树想象为完全二叉树，空节点完全补充为#来序列化
+     * 反序列化则先将非空节点new为节点，根据完全二叉树父子节点之间index的关系来链接
      */
-    /*public String _60_Serialize(TreeNode root) {
-
+    public String _61_Serialize(TreeNode root) {
+        if (root == null) return "#";
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        StringBuilder sb = new StringBuilder();
+        //全为null的叶子节点的size
+        int finalLevelSize = 0;
+        while (!queue.isEmpty()) {
+            //用Queue层序遍历稍作变形
+            int levelSize = queue.size();
+            //记录当前level是否含有真实节点，如果没有的话结束层序遍历
+            int realValueCount = 0;
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode curNode = queue.poll();
+                if (curNode == null) {
+                    sb.append("#").append("!");
+                    queue.offer(null);
+                    queue.offer(null);
+                } else {
+                    realValueCount++;
+                    sb.append(curNode.val).append("!");
+                    queue.offer(curNode.left);
+                    queue.offer(curNode.right);
+                }
+            }
+            if (realValueCount == 0) {
+                finalLevelSize = levelSize;
+                break;
+            }
+        }
+        //返回值中删除最后的全为null的那一层节点
+        return sb.delete(sb.length() - 2*finalLevelSize, sb.length()).toString();
     }
 
-    public TreeNode _60_Deserialize(String str) {
-
-    }*/
-
-    public ArrayList<Integer> maxInWindows(int[] num, int size) {
-        if (num == null || num.length == 0 || size <= 0 || num.length < size) {
-            return new ArrayList<Integer>();
+    public TreeNode _61_Deserialize(String str) {
+        String[] value = str.split("!");
+        TreeNode[] nodeArray = new TreeNode[value.length];
+        //把所有节点生成完毕
+        for (int i = 0; i < value.length; i++) {
+            if (!value[i].equals("#")) {
+                nodeArray[i] = new TreeNode(Integer.parseInt(value[i]));
+            }else{
+                nodeArray[i] = null;
+            }
         }
+        //根据index之间关系将节点之间关系进行连接
+        for (int j = 0; j <= (value.length - 3) / 2; j++) {
+            if(nodeArray[j] != null){
+                int leftIndex = 2 * j + 1;
+                int rightIndex = 2 * j + 2;
+                nodeArray[j].left = nodeArray[leftIndex];
+                nodeArray[j].right = nodeArray[rightIndex];
+            }
+        }
+        return nodeArray[0];
+    }
+
+
+    /**
+     * --题目描述--
+     * 给定一棵二叉搜索树，请找出其中的第k小的结点。例如， （5，3，7，2，4，6，8）
+     * 中，按结点数值大小顺序第三小结点的值为4。
+     * <p>
+     * --解题思路--
+     * 对二叉树而言，中序遍历(1.递归/2.Stack)即把元素从小到大排列，取第k小即可
+     */
+    private int count = 0;
+
+    public TreeNode _62_KthNode1(TreeNode pRoot, int k) {
+        if (pRoot != null) {
+            TreeNode nodeLeft = _62_KthNode1(pRoot.left, k);
+            if (nodeLeft != null) return nodeLeft;
+            if (++count == k) return pRoot;
+            TreeNode nodeRight = _62_KthNode1(pRoot.right, k);
+            if (nodeRight != null) return nodeRight;
+        }
+        return null;
+    }
+
+
+    public TreeNode _62_KthNode2(TreeNode pRoot, int k) {
+        int count = 0;
+        Stack<TreeNode> stack = new Stack<>();
+        while (pRoot != null || !stack.isEmpty()) {
+            while (pRoot != null) {
+                stack.push(pRoot);
+                pRoot = pRoot.left;
+            }
+            pRoot = stack.pop();
+            if (++count == k) return pRoot;
+            pRoot = pRoot.right;
+        }
+        return null;
+    }
+
+    /**
+     * --题目描述--
+     * 如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排
+     * 序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中
+     * 间两个数的平均值。我们使用Insert()方法读取数据流，使用GetMedian()方法获取当前读取
+     * 数据的中位数。
+     * <p>
+     * --解题思路--
+     * 一个最大堆，一个最小堆，不断调整，偶数为两个堆顶平均数，奇数取最大堆顶
+     */
+    private PriorityQueue<Integer> maxHeap = new PriorityQueue<>(new Comparator<Integer>() {
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            return o2.compareTo(o1);
+        }
+    });
+    private PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    private int maxCount = 0;
+    private int minCount = 0;
+
+    public void _63_Insert(Integer num) {
+        if (maxCount == minCount) {
+            if (maxHeap.isEmpty() || (!minHeap.isEmpty() && minHeap.peek() > num)) {
+                maxHeap.offer(num);
+            } else {
+                maxHeap.offer(minHeap.poll());
+                minHeap.offer(num);
+            }
+            maxCount++;
+        } else {
+            if (!maxHeap.isEmpty() && maxHeap.peek() < num) {
+                minHeap.offer(num);
+            } else {
+                minHeap.offer(maxHeap.poll());
+                maxHeap.offer(num);
+            }
+            minCount++;
+        }
+    }
+
+    public Double _63_GetMedian() {
+        if (((maxCount + minCount) & 1) == 1) {
+            return maxHeap.peek().doubleValue();
+        } else {
+            return (maxHeap.peek().doubleValue() + minHeap.peek().doubleValue()) / 2;
+        }
+    }
+
+    /**
+     * --题目描述--
+     * 给定一个数组和滑动窗口的大小，找出所有滑动窗口里数值的最大值。例如，如果输入数组
+     * {2,3,4,2,6,2,5,1}及滑动窗口的大小3，那么一共存在6个滑动窗口，他们的最大值分别为
+     * {4,4,6,6,6,5}； 针对数组{2,3,4,2,6,2,5,1}的滑动窗口有以下6个：
+     * {[2,3,4],2,6,2,5,1}， {2,[3,4,2],6,2,5,1}， {2,3,[4,2,6],2,5,1}，
+     * {2,3,4,[2,6,2],5,1}， {2,3,4,2,[6,2,5],1}， {2,3,4,2,6,[2,5,1]}。
+     * <p>
+     * --解题思路--
+     * 双端队列，首尾都能弹出，因为是滑动窗口，每个元素都必须入队一次（考虑原数组递减的情况理解）
+     * 元素入队时，要保证队列中别的元素都比他大，由后往前将比他小的元素弹出，因为队列中的元素
+     * 呈现降序排列，队首元素最大，由后往前不需要遍历多余元素。
+     * 元素入队完成后，考虑队首元素是否超出窗口（因为考虑窗口大小，所以队列中记录元素下标），
+     * 如果超出，弹出队首元素，下一个队首元素即当前窗口的最大值（队列中元素呈降序排列）
+     */
+    public ArrayList<Integer> _64_maxInWindows(int[] num, int size) {
         ArrayList<Integer> result = new ArrayList<>();
+        if (num.length == 0 || size <= 0 || num.length < size) {
+            return result;
+        }
         //双端队列，用来记录每个窗口的最大值下标
         LinkedList<Integer> qmax = new LinkedList<>();
         for (int i = 0; i < num.length; i++) {
@@ -1890,4 +2029,108 @@ public class JianZhi {
         return result;
     }
 
+    /**
+     * --题目描述--
+     * 请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从
+     * 矩阵中的任意一个格子开始，每一步可以在矩阵中向左，向右，向上，向下移动一个格子。如果一
+     * 条路径经过了矩阵中的某一个格子，则该路径不能再进入该格子。 例如 a b c e s f c s a
+     * d e e 矩阵中包含一条字符串"bccced"的路径，但是矩阵中不包含"abcb"路径，因为字符串的
+     * 第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入该格子。
+     * <p>
+     * --解题思路--
+     * 回溯算法，具体见代码
+     */
+    public boolean _65_hasPath(char[] matrix, int rows, int cols, char[] str) {
+        //visited数组代表当前坐标是否被访问过
+        boolean[] visited = new boolean[matrix.length];
+        //以matrix中每个点为起点，如果有success的，返回true，否则最后返回false
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (subPath(matrix, rows, cols, str, 1, i, j, visited)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean subPath(char[] matrix, int rows, int cols, char[] str,
+                            int subPathLen, int row, int col, boolean[] visited) {
+        int curIndex = row * cols + col;
+        if (row >= 0 && row < rows && col >= 0 && col < cols && !visited[curIndex]) {
+            //递归出口的条件
+            if (subPathLen == str.length) {
+                return matrix[curIndex] == str[str.length - 1];
+            } else {
+                visited[curIndex] = true;
+                //匹配当前位置是否符合，并且递归找上下左右四个位置
+                if (matrix[curIndex] == str[subPathLen - 1] &&
+                        (subPath(matrix, rows, cols, str, subPathLen + 1,
+                                row, col - 1, visited) ||
+                                subPath(matrix, rows, cols, str, subPathLen + 1,
+                                        row, col + 1, visited) ||
+                                subPath(matrix, rows, cols, str, subPathLen + 1,
+                                        row - 1, col, visited) ||
+                                subPath(matrix, rows, cols, str, subPathLen + 1,
+                                        row + 1, col, visited))) {
+                    return true;
+                }
+                //始终只有一个visited的标记数组，当前位置不能走下去，就要把当前位置重置为
+                //false代表可以从别的路径走到这个位置
+                visited[curIndex] = false;
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * --题目描述--
+     * 地上有一个m行和n列的方格。一个机器人从坐标0, 0的格子开始移动，每一次只能向左，右，上，
+     * 下四个方向移动一格，但是不能进入行坐标和列坐标的数位之和大于k的格子。 例如，当k为18
+     * 时，机器人能够进入方格（35,37），因为3+5+3+7 = 18。但是，它不能进入方格（35,38），
+     * 因为3+5+3+8 = 19。请问该机器人能够达到多少个格子？
+     * <p>
+     * --解题思路--
+     * 回溯算法，具体见代码
+     */
+    public int _66_movingCount(int threshold, int rows, int cols) {
+        //visited数组代表当前坐标是否被访问过
+        boolean[] visited = new boolean[rows * cols];
+        return countHelper(threshold, rows, cols, 0, 0, visited);
+    }
+
+    private int countHelper(int threshold, int rows, int cols, int row,
+                            int col, boolean[] visited) {
+        if (isValidPos(threshold, rows, cols, row, col, visited)) {
+            visited[row * cols + col] = true;
+            //递归求和
+            return 1 + countHelper(threshold, rows, cols, row + 1, col, visited)
+                    + countHelper(threshold, rows, cols, row - 1, col, visited)
+                    + countHelper(threshold, rows, cols, row, col + 1, visited)
+                    + countHelper(threshold, rows, cols, row, col - 1, visited);
+        }
+        return 0;
+    }
+
+    private boolean isValidPos(int threshold, int rows, int cols, int row,
+                               int col, boolean[] visited) {
+        int curIndex = row * cols + col;
+        //判断点是否超出矩阵范围或者被访问过
+        if (row < 0 || row >= rows || col < 0 || col >= cols || visited[curIndex]) {
+            return false;
+        } else {
+            //按题目要求计算每位的和
+            int sum = 0;
+            while (row > 0) {
+                sum += row % 10;
+                row /= 10;
+            }
+            while (col > 0) {
+                sum += col % 10;
+                col /= 10;
+            }
+            return sum <= threshold;
+        }
+    }
 }
