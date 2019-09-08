@@ -1,5 +1,10 @@
 package sj.leetcode;
 
+import sj.util.ListNode;
+
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 /**
  * @author: Jian Shi
  * @email: shijianhzchina@gmail.com
@@ -12,7 +17,7 @@ public class LeetCodeHard {
     }
 
     // 4. Median of Two Sorted Arrays
-    public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    public static double _4_findMedianSortedArrays(int[] nums1, int[] nums2) {
         int nums1Length = nums1.length;
         int nums2Length = nums2.length;
         int totalLength = nums1Length + nums2Length;
@@ -101,7 +106,7 @@ public class LeetCodeHard {
     }
 
     // 10. Regular Expression Matching
-    public static boolean isMatch(String s, String p) {
+    public static boolean _10_isMatch(String s, String p) {
         if (s == null || p == null) {
             return false;
         }
@@ -166,6 +171,31 @@ public class LeetCodeHard {
 
         isMatched = lenMatrix[patternLength][stringLength] == stringLength + 1;
         return isMatched;
+    }
+
+
+    //23. Merge k Sorted Lists
+    public ListNode _23_mergeKLists(ListNode[] lists) {
+        PriorityQueue<ListNode> minHeap = new PriorityQueue<>(new Comparator<ListNode>() {
+            @Override
+            public int compare(ListNode o1, ListNode o2) {
+                return o1.val - o2.val;
+            }
+        });
+        for (ListNode node : lists) {
+            while (node != null) {
+                ListNode temp = new ListNode(node.val);
+                minHeap.offer(temp);
+                node = node.next;
+            }
+        }
+        ListNode head = new ListNode(0);
+        ListNode cur = head;
+        while(!minHeap.isEmpty()){
+            cur.next = minHeap.poll();
+            cur = cur.next;
+        }
+        return head.next;
     }
 
 }
