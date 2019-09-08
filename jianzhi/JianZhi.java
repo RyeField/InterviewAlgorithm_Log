@@ -18,34 +18,6 @@ import java.util.stream.Collectors;
 public class JianZhi {
     public static void main(String[] args) {
         JianZhi jz = new JianZhi();
-        //tree 1
-        TreeNode root1 = new TreeNode(1);
-        TreeNode node1 = new TreeNode(2);
-        TreeNode node2 = new TreeNode(3);
-        TreeNode node3 = new TreeNode(4);
-        TreeNode node4 = new TreeNode(5);
-        TreeNode node5 = new TreeNode(6);
-        TreeNode node6 = new TreeNode(7);
-        root1.left = node1;
-        root1.right = node2;
-        node1.left = node3;
-        node2.right = node4;
-        node3.left = node5;
-        node4.right = node6;
-//        //tree2
-//        TreeNode root2 = new TreeNode(1);
-//        TreeNode node7 = new TreeNode(2);
-//        TreeNode node8 = new TreeNode(4);
-//        TreeNode node9 = new TreeNode(5);
-//        root2.left = node7;
-//        node7.left = node8;
-//        node7.right = node9;
-//        System.out.println(jz._17_HasSubtree(root1,root2));
-        System.out.println(jz._61_Serialize(root1));
-        System.out.println(jz._60_Print(jz._61_Deserialize(jz._61_Serialize(root1))));
-
-//        int[] test = {3, 3, 3, 3, 4, 5};
-//        System.out.println(jz._37_GetNumberOfK(test, 3));
     }
 
     public void input() {
@@ -56,12 +28,20 @@ public class JianZhi {
         }
     }
 
-    //从左上角不断缩小最大列的限制，（其实从左下角最佳，小了向右，大了向上）
-    public boolean _1_Find(int target, int[][] array) {
-        int row = array.length;
-        int col = array[0].length;
-        int maxColumn = col;
-        for (int i = 0; i < row; i++) {
+    /**
+     * --题目描述--
+     * 在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列
+     * 都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数
+     * 组中是否含有该整数。
+     * <p>
+     * --解题思路--
+     * 从左上角不断缩小最大列的限制
+     * 最佳方案：从左下角开始匹配，小了向右，大了向上
+     */
+    public boolean _1_Find1(int target, int[][] array) {
+        int rows = array.length;
+        int maxColumn = array[0].length;
+        for (int i = 0; i < rows; i++) {
             for (int j = 0; j < maxColumn; j++) {
                 if (array[i][j] == target) {
                     return true;
@@ -77,7 +57,32 @@ public class JianZhi {
         return false;
     }
 
-    //直接用replace也可以。。不懂什么意义
+    public boolean _1_Find2(int target, int[][] array) {
+        int row = array.length - 1;
+        int col = 0;
+        while (row >= 0 && col < array[0].length) {
+            if (array[row][col] < target) {
+                col++;
+            } else if (array[row][col] > target) {
+                row--;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * --题目描述--
+     * 请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.
+     * 则经过替换之后的字符串为We%20Are%20Happy。
+     * <p>
+     * --解题思路--
+     * 1.直接用把StringBuffer转换为String调用replace
+     * 2.用了空间申请一个StringBuilder或StringBuffer对象，遍历一遍，不断追加
+     * 3.源字符串先遍历一遍得出空格的多少来进行扩容，扩容后从后往前遍历，移动旧char到新的位置
+     * 或者改变 ' ' 为 '%' '2' '0'
+     */
     public String _2_replaceSpace(StringBuffer str) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
@@ -91,7 +96,31 @@ public class JianZhi {
         return sb.toString();
     }
 
-    public ArrayList<Integer> _3_printListFromTailToHead(ListNode listNode) {
+    /**
+     * --题目描述--
+     * 输入一个链表，按链表从尾到头的顺序返回一个ArrayList。
+     * <p>
+     * --解题思路--
+     * 1.递归的思想
+     * 2.借助Stack先进后出
+     */
+    public ArrayList<Integer> _3_printListFromTailToHead1(ListNode listNode) {
+        ArrayList<Integer> reveList = new ArrayList<>();
+        if (listNode != null) {
+            tailListHelper(listNode.next, reveList);
+            reveList.add(listNode.val);
+        }
+        return reveList;
+    }
+
+    private void tailListHelper(ListNode listNode, ArrayList<Integer> reveList) {
+        if (listNode != null) {
+            tailListHelper(listNode.next, reveList);
+            reveList.add(listNode.val);
+        }
+    }
+
+    public ArrayList<Integer> _3_printListFromTailToHead2(ListNode listNode) {
         ArrayList<Integer> reveList = new ArrayList<>();
         Stack<Integer> stack = new Stack<>();
         while (listNode != null) {
@@ -104,7 +133,20 @@ public class JianZhi {
         return reveList;
     }
 
-    //递归的应用。。做Tree相关一直习惯递归了。。
+    /**
+     * --题目描述--
+     * 输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历
+     * 的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列
+     * {4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+     * <p>
+     * --解题思路--
+     * 递归的应用。做Tree相关一直习惯递归了。
+     * 前序遍历的首个元素即为root，根据root在中序遍历中的位置把Tree分成left，right两部分，
+     * 根据中序遍历得到的size来把前序遍历分成left,right两部分，每个部分的首元素即为新root
+     * 递归左右两部分，最终得到解
+     * 自己写的这个太过复杂，牛客网上有精炼的答案，引用了“前进的路上”的答案作为参考
+     * https://www.nowcoder.com/questionTerminal/8a19cbe657394eeaac2f6ea9b0f6fcf6?f=discussion
+     */
     public TreeNode _4_reConstructBinaryTree(int[] pre, int[] in) {
         if (pre.length != 0 && in.length != 0) {
             TreeNode root = new TreeNode(pre[0]);
@@ -116,8 +158,8 @@ public class JianZhi {
         }
     }
 
-    public void findSubTree(List<Integer> in, List<Integer> pre,
-                            TreeNode root) {
+    private void findSubTree(List<Integer> in, List<Integer> pre,
+                             TreeNode root) {
         List<Integer> leftin = new ArrayList<>();
         List<Integer> rightin = new ArrayList<>();
         boolean left_done = false;
@@ -148,6 +190,32 @@ public class JianZhi {
         }
     }
 
+    public TreeNode _4_reConstructBinaryTree2(int[] pre, int[] in) {
+        if (pre.length == 0 || in.length == 0) {
+            return null;
+        }
+        TreeNode node = new TreeNode(pre[0]);
+        for (int i = 0; i < in.length; i++) {
+            //pre[0] 即为root, root在inOrder的位置得到了left和right的size，再去分割preOder
+            if (pre[0] == in[i]) {
+                node.left = _4_reConstructBinaryTree2(Arrays.copyOfRange(pre, 1,
+                        i + 1), Arrays.copyOfRange(in, 0, i));
+                node.right = _4_reConstructBinaryTree2(Arrays.copyOfRange(pre,
+                        i + 1, pre.length), Arrays.copyOfRange(in, i + 1, in.length));
+            }
+        }
+        return node;
+    }
+
+    /**
+     * --题目描述--
+     * 用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
+     * <p>
+     * --解题思路--
+     * 正常push到第一个stack中去，
+     * pop的时候，先将第一个stack中的所有元素依次pop，再push到第二个stack中，此时，第二个
+     * stack的顶部即为模拟queue要pop的元素，pop后，再倒回第一个stack
+     */
     public class _5_QueueByStack {
         Stack<Integer> stack1 = new Stack<>();
         Stack<Integer> stack2 = new Stack<>();
@@ -168,6 +236,17 @@ public class JianZhi {
         }
     }
 
+    /**
+     * --题目描述--
+     * 把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。
+     * 输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。
+     * 例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。
+     * NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+     * <p>
+     * --解题思路--
+     * 1.因为是非递减数组的旋转，所以遇到的第一个比array[0]小的元素就是本来的首元素，即最小值
+     * 2.用二分搜索，Binary search的变形
+     */
     public int _6_minNumberInRotateArray_1(int[] array) {
         if (array.length == 0) return 0;
         int cur = array[0];
@@ -180,24 +259,34 @@ public class JianZhi {
         return cur;
     }
 
-    //binary search的变形
     public int _6_minNumberInRotateArray_2(int[] array) {
         if (array.length == 0) return 0;
         int low = 0, high = array.length - 1;
+        //因为是旋转数组，首元素必定大于末尾元素
         while (low < high) {
             int mid = (low + high) / 2;
-            //cannot use left and mid here, by experiment.
             if (array[mid] > array[high]) {
+                //最小值在右边部分,如8>2,min=0,[4,5,6,7,'8',9,"0",1,'2']
                 low = mid + 1;
             } else if (array[mid] == array[high]) {
+                //含有相同数字
                 high = high - 1;
             } else {
+                //最小值在左边部分,如2<5,min=1,[6,7,"1",'2',3,4,'5']
                 high = mid;
             }
         }
         return Math.min(array[low], array[high]);
     }
 
+    /**
+     * --题目描述--
+     * 大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项
+     * （从0开始，第0项为0）。n<=39
+     * <p>
+     * --解题思路--
+     * 迭代求解斐波那契数列
+     */
     //基础斐波那契数列
     public int _7_Fibonacci(int n) {
         int fir = 1;
@@ -218,7 +307,15 @@ public class JianZhi {
         return temp;
     }
 
-    //斐波那契数列应用
+    /**
+     * --题目描述--
+     * 一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法
+     * （先后次序不同算不同的结果）。
+     * <p>
+     * --解题思路--
+     * 斐波那契数列应用。找规律，或者理论推导得出F(n) = F(n-1) + F(n-2)即跳上第n阶台阶可
+     * 以从n-1跳一步或者从n-2跳一步，即两者相加，不断递推得出斐波那契数列规律，用迭代解
+     */
     public int _8_JumpFloor(int target) {
         int fir = 1;
         int sed = 2;
@@ -238,7 +335,7 @@ public class JianZhi {
         return cur;
     }
 
-    public long factorial(int n) {
+    private long factorial(int n) {
         if (n < 0) {
             return -1;
         }
@@ -255,6 +352,15 @@ public class JianZhi {
         return result;
     }
 
+    /**
+     * --题目描述--
+     * 一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台
+     * 阶总共有多少种跳法。
+     * <p>
+     * --解题思路--
+     * 1.排列组合，很耗时
+     * 2.永远都是之前的两倍，排列组合的证明 就是1里面的公式
+     */
     public int _9_JumpFloorII_1(int target) {
         int combination = 1;
         for (int k = 1; k < target; k++) {
@@ -264,13 +370,18 @@ public class JianZhi {
         return combination;
     }
 
-    //永远都是之前的两倍，排列组合的证明 就是1里面的公式
     public int _9_JumpFloorII_2(int target) {
-        int a = 1;
-        return a << (target - 1); //位运算
+        return 1 << (target - 1); //位运算，a*2^(n-1)
     }
 
-    //斐波那契数列应用
+    /**
+     * --题目描述--
+     * 我们可以用2*1的小矩形横着或者竖着去覆盖更大的矩形。请问用n个2*1的小矩形无重叠地覆盖一
+     * 个2*n的大矩形，总共有多少种方法？
+     * <p>
+     * --解题思路--
+     * 斐波那契数列应用
+     */
     public int _10_RectCover(int target) {
         int fir = 1;
         int sed = 2;
@@ -290,13 +401,19 @@ public class JianZhi {
         return cur;
     }
 
-    //位操作的运用，前两个Java内置API
+    /**
+     * --题目描述--
+     * 输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。
+     * <p>
+     * --解题思路--
+     * 位操作的运用，前两个Java内置API
+     */
     public int _11_NumberOf1(int n) {
 //        return Integer.toBinaryString(n).replace("0","").length();
 //        return Integer.bitCount(n);
         int count = 0, flag = 1;
         for (int i = 0; i < 32; i++) {
-            //不断右移，和1与操作
+            //不断右移，和1与操作 1&1 = 1, 0&1 = 0
             if ((n >> i & flag) == 1) {
                 count++;
             }
@@ -304,17 +421,31 @@ public class JianZhi {
         return count;
     }
 
-    //平方求幂exponentiation by squaring 或 快速幂 的思想
+    /**
+     * --题目描述--
+     * 给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。
+     * 保证base和exponent不同时为0
+     * <p>
+     * --解题思路--
+     * 平方求幂(exponentiation by squaring) 或 快速幂 的思想
+     * 快速幂 https://oi-wiki.org/math/quick-pow/
+     */
     public double _12_Power(double base, int exponent) {
+        //flag确立正负
         boolean flag = true;
         double res = 1;
         if (exponent == 0) {
             return 1;
         } else if (exponent < 0) {
             flag = false;
+            //负的改为正的，最后求倒数
             exponent = -exponent;
         }
         //不断右移exponent，在base不断递增时，exponent当前位为1，则base*res
+        //比如3^5=243，base=3, exponent=5->101.
+        //1.res=1*3=3, base=3*3=9, exponent>>1=10;
+        //2.res=3不变, base=9*3=27, exponent>>1=1;
+        //3.res=3*27=243, base=27*3=243, exponent>>1=0; 结束
         while (exponent > 0) {
             if ((exponent & 1) == 1) {
                 res *= base;
@@ -325,15 +456,25 @@ public class JianZhi {
         return flag ? res : 1 / res;
     }
 
-    //类似于插入排序，不然就是在建立一个数组存偶数放最后
+    /**
+     * --题目描述--
+     * 输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部
+     * 分，所有的偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
+     * <p>
+     * --解题思路--
+     * 类似于插入排序，不然就是在建立一个数组存偶数放最后
+     */
     public void _13_reOrderArray(int[] array) {
+        //记录已经放好的奇数
         int min = 0;
         for (int i = 0; i < array.length; i++) {
             if (array[i] % 2 == 1 && i > 0) {
                 int temp = array[i];
+                //把当前index之前所有的偶数后移一位
                 for (int k = i; k > min; k--) {
                     array[k] = array[k - 1];
                 }
+                //放好奇数，数量+1
                 array[min] = temp;
                 min++;
             } else if (array[i] % 2 == 1 && i == 0) {
@@ -342,7 +483,13 @@ public class JianZhi {
         }
     }
 
-    //双指针，一个领先k步
+    /**
+     * --题目描述--
+     * 输入一个链表，输出该链表中倒数第k个结点。
+     * <p>
+     * --解题思路--
+     * 双指针，一个领先k步
+     */
     public ListNode _14_FindKthToTail(ListNode head, int k) {
         ListNode nodeFaster = head;
         ListNode nodeSlower = head;
@@ -355,7 +502,13 @@ public class JianZhi {
         return index < k ? null : nodeSlower;
     }
 
-    //迭代解法，也可以递归。。不是太习惯。
+    /**
+     * --题目描述--
+     * 输入一个链表，反转链表后，输出新链表的表头。
+     * <p>
+     * --解题思路--
+     * 迭代解法，也可以递归。。不是太习惯。
+     */
     public ListNode _15_ReverseList(ListNode head) {
         ListNode pre = null;
         ListNode cur = head;
@@ -369,7 +522,15 @@ public class JianZhi {
         return pre;
     }
 
-    //迭代解法
+    /**
+     * --题目描述--
+     * 输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不
+     * 减规则
+     * <p>
+     * --解题思路--
+     * 迭代解法
+     */
+
     public ListNode _16_Merge(ListNode list1, ListNode list2) {
         ListNode head, cur;
         if (list1 == null && list2 == null) {
@@ -413,13 +574,13 @@ public class JianZhi {
     }
 
     //重新回顾了下 inOrder 和 levelOrder 的写法
-    public List<Integer> inOrder(TreeNode root) {
+    private List<Integer> inOrder(TreeNode root) {
         List<Integer> in = new ArrayList<>();
         inOrderHelper(root, in);
         return in;
     }
 
-    public void inOrderHelper(TreeNode root, List<Integer> in) {
+    private void inOrderHelper(TreeNode root, List<Integer> in) {
         if (root != null) {
             inOrderHelper(root.left, in);
             in.add(root.val);
@@ -427,7 +588,7 @@ public class JianZhi {
         }
     }
 
-    public List<Integer> layerOrder(TreeNode root) {
+    private List<Integer> levelOrder(TreeNode root) {
         List<Integer> layer = new ArrayList<>();
         Queue<TreeNode> nodes = new LinkedList<>();
         nodes.add(root);
@@ -444,6 +605,15 @@ public class JianZhi {
         return layer;
     }
 
+    /**
+     * --题目描述--
+     * 输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
+     * <p>
+     * --解题思路--
+     * level order一层层扫，当A树当前node的value和B树Root的value一样时候，调用下一个函数，
+     * 继续用level order的思想比较两棵树是否相同
+     * 牛客网上答案很多递归解法
+     */
     public boolean _17_HasSubtree(TreeNode root1, TreeNode root2) {
         if (root1 == null || root2 == null) return false;
         Queue<TreeNode> nodes1 = new LinkedList<>();
@@ -468,7 +638,7 @@ public class JianZhi {
     }
 
     //level order 一层层迭代比较node确定是否包含
-    public boolean isSubtree(TreeNode root1, TreeNode root2) {
+    private boolean isSubtree(TreeNode root1, TreeNode root2) {
         Queue<TreeNode> nodes1 = new LinkedList<>();
         nodes1.add(root1);
         Queue<TreeNode> nodes2 = new LinkedList<>();
@@ -493,7 +663,13 @@ public class JianZhi {
         return true;
     }
 
-    //树的递归的应用
+    /**
+     * --题目描述--
+     * 操作给定的二叉树，将其变换为源二叉树的镜像。
+     * <p>
+     * --解题思路--
+     * 树的递归的应用
+     */
     public void _18_Mirror(TreeNode root) {
         if (root != null) {
             if (root.left != null && root.right != null) {
@@ -514,21 +690,33 @@ public class JianZhi {
         }
     }
 
-    //不断绕圈往里缩小，每到matrix的角，进行缩小边界
+    /**
+     * --题目描述--
+     * 输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字，例如，
+     * 如果输入如下4 X 4 矩阵： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+     * 则依次打印出数字 1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10.
+     * <p>
+     * --解题思路--
+     * 不断绕圈往里缩小，每到matrix的角，进行缩小边界
+     */
     public ArrayList<Integer> _19_printMatrix(int[][] matrix) {
         int maxRow = matrix.length - 1;
         int maxCol = matrix[0].length - 1;
         int minRow = 0;
         int minCol = 0;
         ArrayList<Integer> res = new ArrayList<>();
+        //0.0点开始转圈到中心
         while (true) {
+            //从row 0 开始，row不变，col到max结束，row Min++
             res.addAll(Arrays.stream(matrix[minRow], minCol, maxCol + 1).boxed().collect(Collectors.toList()));
             minRow++;
+            //从col Max开始，col不变，row到max结束，col Max--
             for (int i = minRow; i <= maxRow; i++) {
                 int col1 = matrix[i][maxCol];
                 res.add(col1);
             }
             maxCol--;
+            //从row Max开始(rowMin<=rowMax的情况下), row不变，col到min结束,row Max--
             if (minRow <= maxRow) {
                 List<Integer> bottomRow = Arrays.stream(matrix[maxRow], minCol,
                         maxCol + 1).boxed().collect(Collectors.toList());
@@ -536,6 +724,7 @@ public class JianZhi {
                 res.addAll(bottomRow);
                 maxRow--;
             }
+            //从col Min开始(colMin<=colMax的情况下)，col不变，row到max结束，col Min++
             if (minCol <= maxCol) {
                 for (int i = maxRow; i >= minRow; i--) {
                     int col2 = matrix[i][minCol];
@@ -549,7 +738,14 @@ public class JianZhi {
         return res;
     }
 
-    //辅助栈存储当前栈中最小值
+    /**
+     * --题目描述--
+     * 定义栈的数据结构，请在该类型中实现一个能够得到栈中所含最小元素的min函数（时间复杂度应为O（1））。
+     * <p>
+     * --解题思路--
+     * 辅助栈存储当前栈中最小值,加入辅助栈的数字必定比当前辅助栈的栈顶小
+     * 弹出时，辅助栈和普通栈顶元素相同时，弹出，不然辅助栈不动
+     */
     public class _20_MyStack {
 
         Stack<Integer> stack = new Stack<>();
@@ -580,7 +776,18 @@ public class JianZhi {
         }
     }
 
-    //辅助stack模拟pop过程
+    /**
+     * --题目描述--
+     * 输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否可能为该栈的弹出顺序。
+     * 假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4,5,3,2,1是该
+     * 压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列。
+     * （注意：这两个序列的长度是相等的）
+     * <p>
+     * --解题思路--
+     * 辅助stack模拟pop过程，用pushA数组的顺序压入辅助Stack，当Stack顶和popB数组元素相同
+     * 时，弹出Stack顶元素，且popA的指针前移一位，直到pushA数组全部入栈一次且结束循环，
+     * 如果最后指针index没有走到最后，则说明popA不是pushA的一个栈弹出顺序
+     */
     public boolean _21_IsPopOrder(int[] pushA, int[] popA) {
         if (pushA.length == 0 || popA.length == 0) return false;
         int index = 0;
@@ -595,7 +802,14 @@ public class JianZhi {
         return index == popA.length;
     }
 
-    //一层层打印树，用Queue,弹出一个node，加入他的children
+    /**
+     * --题目描述--
+     * 从上往下打印出二叉树的每个节点，同层节点从左至右打印。
+     * <p>
+     * --解题思路--
+     * 层序遍历二叉树，一层层打印树，用Queue,弹出一个node，加入他的children
+     * （第60题是本题加强版本，加入了每一个level的size，最后输出List of List）
+     */
     public ArrayList<Integer> _22_PrintFromTopToBottom(TreeNode root) {
         ArrayList<Integer> res = new ArrayList<>();
         Queue<TreeNode> nodes = new LinkedList<>();
@@ -614,35 +828,53 @@ public class JianZhi {
         return res;
     }
 
-    //递归解法
+    /**
+     * --题目描述--
+     * 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则
+     * 输出No。假设输入的数组的任意两个数字都互不相同。
+     * <p>
+     * --解题思路--
+     * 递归解法
+     * 最后一个元素是root，前半部分list小于root，后半部分list必须都大于root才是true
+     */
     public boolean _23_VerifySquenceOfBST(int[] sequence) {
         if (sequence.length == 0) return false;
         if (sequence.length <= 2) return true;
-        return verifySquenceOfBSTHelper(sequence);
+        return verifySequenceOfBASTHelper(sequence);
     }
 
-    //最后一个元素是root，前半部分list小于root，后半部分list必须都大于root才是true
-    public boolean verifySquenceOfBSTHelper(int[] sequence) {
+    private boolean verifySequenceOfBASTHelper(int[] sequence) {
         if (sequence.length <= 2) return true;
         int curRoot = sequence[sequence.length - 1];
         boolean shouldLarger = false;
         int splitIndex = 0;
         for (int i = 0; i < sequence.length - 1; i++) {
+            //找到splitIndex，之后的元素都应该大于Root
             if (!shouldLarger && sequence[i] > curRoot) {
                 splitIndex = i;
                 shouldLarger = true;
             }
             if (shouldLarger && sequence[i] < curRoot) return false;
         }
-        return verifySquenceOfBSTHelper(Arrays.copyOfRange(sequence, 0,
-                splitIndex)) & verifySquenceOfBSTHelper(Arrays.copyOfRange(sequence, splitIndex, sequence.length - 1));
+        //递归求解
+        return verifySequenceOfBASTHelper(Arrays.copyOfRange(sequence, 0,
+                splitIndex)) & verifySequenceOfBASTHelper(Arrays.copyOfRange(sequence, splitIndex, sequence.length - 1));
     }
 
-    //非递归解法，三个队列，BFS的思路，不断更新，符合条件的路径放入最后结果
-    //考虑路径长的放在前面，因为是BFS，所以每次拿到符合的路径，放在0位置
+    /**
+     * --题目描述--
+     * 输入一颗二叉树的根节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定
+     * 义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。
+     * (注意: 在返回值的list中，数组长度大的数组靠前)
+     * <p>
+     * --解题思路--
+     * 非递归解法，三个队列，BFS的思路层序遍历，不断更新，符合条件的路径放入最后结果ArrayList
+     * 考虑路径长的放在前面，因为是BFS，所以每次拿到符合的路径（肯定比之前的长），放在0位置
+     */
     public ArrayList<ArrayList<Integer>> _24_FindPath(TreeNode root, int target) {
         ArrayList<ArrayList<Integer>> res = new ArrayList<>();
         if (root == null) return res;
+        //三个队列是同步 入队 和 出队 操作
         Queue<ArrayList<Integer>> path = new LinkedList<>(); //记录路径
         Queue<TreeNode> nodes = new LinkedList<>(); //记录节点
         Queue<Integer> sum = new LinkedList<>(); //记录路径总和
@@ -654,10 +886,12 @@ public class JianZhi {
         while (!nodes.isEmpty()) {
             int curLayerSize = nodes.size();
             for (int i = 0; i < curLayerSize; i++) {
+                //弹出的这个节点Node，之前的到这个node的Path，之前的Path的Sum
                 int preSum = sum.poll();
                 TreeNode preNode = nodes.poll();
                 ArrayList<Integer> prePath = path.poll();
                 if (preSum < target) {
+                    //入队leftChild相关属性的3个队列
                     if (preNode.left != null) {
                         nodes.add(preNode.left);
                         sum.add(preSum + preNode.left.val);
@@ -665,6 +899,7 @@ public class JianZhi {
                         curPath.add(preNode.left.val);
                         path.add(curPath);
                     }
+                    //入队rightChild相关属性的3个队列
                     if (preNode.right != null) {
                         nodes.add(preNode.right);
                         sum.add(preSum + preNode.right.val);
@@ -673,6 +908,8 @@ public class JianZhi {
                         path.add(curPath);
                     }
                 } else if (preSum == target) {
+                    //如果之前这个节点没有left和right child，则是叶子节点
+                    //如果符合target的和，则把path加入到最后的res中(放在index=0位置)
                     if (preNode.left == null && preNode.right == null) {
                         res.add(0, prePath);
                     }
@@ -682,23 +919,35 @@ public class JianZhi {
         return res;
     }
 
-    //hashMap 先clone每一个node，并设置next关系
-    //再遍历一遍补上random关系
-    //讨论中还看到一个三步法，在原链表中进行操作
+    /**
+     * --题目描述--
+     * 输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针
+     * 指向任意一个节点），返回结果为复制后复杂链表的head。
+     * （注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
+     * <p>
+     * --解题思路--
+     * hashMap 先 clone 每一个 node，并设置 next 关系
+     * 再遍历一遍补上random关系
+     * 讨论中还看到一个三步法，在原链表中进行操作
+     */
     public RandomListNode _25_Clone(RandomListNode pHead) {
         Map<RandomListNode, RandomListNode> map = new HashMap<>();
         RandomListNode curNode = pHead;
+        //对clone node创建一个新的head
         RandomListNode preCloneNode = new RandomListNode(0);
-        //遍历node，clone,一一对应
+        //遍历node，把clone node放入HashMap中且每个clone有next label变量值
         while (curNode != null) {
+            //根据当前给定的cur node的label来创建一个新的clone node
             RandomListNode cloneNode = new RandomListNode(curNode.label);
+            //前一个 pre clone node指向当前的clone node
             preCloneNode.next = cloneNode;
+            //以curNode为key，放入clone node来方便后续补充random关系
             map.put(curNode, cloneNode);
             preCloneNode = cloneNode;
             curNode = curNode.next;
         }
         preCloneNode.next = null; //point the last node to null
-        //补上random关系
+        //遍历HashMap补上random关系
         Iterator<Map.Entry<RandomListNode, RandomListNode>> iterator =
                 map.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -708,8 +957,15 @@ public class JianZhi {
         return map.get(pHead);
     }
 
-    //基于Binary Tree的非递归中序遍历（等同于排序）
-    //https://leetcode.com/problems/binary-tree-inorder-traversal/solution/
+    /**
+     * --题目描述--
+     * 输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，
+     * 只能调整树中结点指针的指向。
+     * <p>
+     * --解题思路--
+     * 基于Binary Tree的非递归中序遍历（等同于排序）
+     * https://leetcode.com/problems/binary-tree-inorder-traversal/solution/
+     */
     public TreeNode _26_Convert(TreeNode pRootOfTree) {
         Stack<TreeNode> stack = new Stack<>();
         TreeNode preNode = null;
@@ -736,6 +992,11 @@ public class JianZhi {
     }
 
     /**
+     * --题目描述--
+     * 输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符串abc,则打印出由
+     * 字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。
+     * <p>
+     * --解题思路--
      * 字符串的全排列问题
      * 递归的算法，在固定不同的prefix的前提下（不断swap当前index的字符和后面的每一个字符来生成一个prefix）
      * 对每一个这样的prefix，再继续递归后续的字符，直到到达最后一个字符
@@ -743,8 +1004,9 @@ public class JianZhi {
      * 还有一种迭代算法，巧妙的找下一个最接近的排序，直到最后一个排序
      * https://www.nowcoder.com/questionTerminal/fe6b651b66ae47d7acce78ffdd9a96c7
      * 中“天天502”的答案解释了2种方法
+     * 非递归字典序全排列算法在下面网址
+     * https://www.cnblogs.com/pmars/archive/2013/12/04/3458289.html
      */
-
     public ArrayList<String> _27_Permutation(String str) {
         ArrayList<String> list = new ArrayList<>();
         if (str != null && str.length() > 0) {
@@ -754,17 +1016,20 @@ public class JianZhi {
         return list;
     }
 
-    public void PermutationHelper(char[] strChar, int startIndex,
-                                  ArrayList<String> list) {
+    private void PermutationHelper(char[] strChar, int startIndex,
+                                   ArrayList<String> list) {
         if (startIndex == strChar.length - 1) {
-            StringBuilder sb = new StringBuilder();
+            /*StringBuilder sb = new StringBuilder();
             for (Character ch : strChar) sb.append(ch);
-            list.add(sb.toString());
-//            String.valueOf(strChar); //更简单的Char数组转换为String
+            list.add(sb.toString());*/
+            list.add(String.valueOf(strChar)); //更简单的Char数组转换为String
         } else {
+            // Set 放在这里防止出现重复，如果已经相同的元素出现过且与之前的元素交换过，
+            // 则不需要再进行交换.不加这个set，可以在上面list.add语句之前加个判断，
+            // list是否包含相同的String串，如果是，则不add.
             Set<Character> set = new HashSet<>();
             for (int i = startIndex; i < strChar.length; i++) {
-                if (i == startIndex || !set.contains(strChar[i])) {
+                if (!set.contains(strChar[i])) {
                     set.add(strChar[i]);
                     swapSingleChar(strChar, startIndex, i);
                     PermutationHelper(strChar, startIndex + 1, list);
@@ -775,13 +1040,21 @@ public class JianZhi {
 
     }
 
-    public void swapSingleChar(char[] strChar, int indexFir, int indexSed) {
+    private void swapSingleChar(char[] strChar, int indexFir, int indexSed) {
         char temp = strChar[indexFir];
         strChar[indexFir] = strChar[indexSed];
         strChar[indexSed] = temp;
     }
 
-    //Hashmap可以较简单解出，剑指Offer的答案较复杂，考虑别的技巧
+    /**
+     * --题目描述--
+     * 数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数
+     * 组{1,2,3,2,2,2,5,4,2}。由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。
+     * 如果不存在则输出0。
+     * <p>
+     * --解题思路--
+     * HashMap可以较简单解出
+     */
     public int _28_MoreThanHalfNum_Solution1(int[] array) {
         Map<Integer, Integer> map = new HashMap<>();
         for (int num : array) {
@@ -838,7 +1111,7 @@ public class JianZhi {
             for (int key : map.keySet()) {
                 finalNum = key;
             }
-            //复查是否符合，读了两遍array，其实有违算法初衷
+            //复查是否符合，读了两遍array，其实有违算法初衷,但还是O(n)的复杂度
             for (int num : array) {
                 if (num == finalNum) {
                     count += 1;
@@ -852,8 +1125,16 @@ public class JianZhi {
         }
     }
 
-    //用siftdown自己维护了heap的性质，实质上用PriorityQueue即可
-    public ArrayList<Integer> _29_GetLeastNumbers_Solution(int[] input, int k) {
+    /**
+     * --题目描述--
+     * 输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4,。
+     * <p>
+     * --解题思路--
+     * 维护一个最大堆即可，用siftdown函数自己维护了heap的性质，
+     * 实质上用PriorityQueue即可,Java中默认PriorityQueue是Natural
+     * Order，需要重写一下Comparator里的compare函数
+     */
+    public ArrayList<Integer> _29_GetLeastNumbers_Solution1(int[] input, int k) {
         ArrayList<Integer> result = new ArrayList<>();
         //建立一个ksize大小的最大堆（找最小的k个数）
         if (k > input.length || k == 0) {
@@ -909,21 +1190,44 @@ public class JianZhi {
         heap[keyIndex] = keyValue;
     }
 
-    //自己的思路，基本思路是负和抛弃从0开始
+    public ArrayList<Integer> _29_GetLeastNumbers_Solution2(int[] input, int k) {
+        if (k > input.length || k == 0) return new ArrayList<>();
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int value : input) {
+            if (maxHeap.size() < k) {
+                maxHeap.offer(value);
+            } else {
+                if (value < maxHeap.peek()) {
+                    maxHeap.poll();
+                    maxHeap.offer(value);
+                }
+            }
+        }
+        ArrayList<Integer> res = new ArrayList<>(maxHeap);
+        return res;
+    }
+
+    /**
+     * --题目描述--
+     * HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古
+     * 老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。
+     * 但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？
+     * 例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。
+     * 给一个数组，返回它的最大连续子序列的和，你会不会被他忽悠住？(子向量的长度至少是1)
+     * <p>
+     * --解题思路--
+     * 1.自己的思路，基本思路是负和抛弃然后从0开始
+     * 2.动态规划的思路，记录以每个index结尾的subarray最大的和
+     */
     public int _30_FindGreatestSumOfSubArray1(int[] array) {
         int sum = Integer.MIN_VALUE;
-        int cur = 0;
+        int cur;
         int maxNegative = Integer.MIN_VALUE;
         int maxSum = Integer.MIN_VALUE;
-        int result;
         boolean firstPositive = true;
         for (int i = 0; i < array.length; i++) {
             cur = array[i];
             if (cur < 0) {
-                //更新最大sum
-                if (sum > maxSum) {
-                    maxSum = sum;
-                }
                 //当前是负数，更新最大负数，最后总和为负时用
                 if (maxNegative < cur) {
                     maxNegative = cur;
@@ -939,24 +1243,18 @@ public class JianZhi {
             if (!firstPositive) {
                 //遇到负和抛弃之前的结果，重新积累, 不然继续积累
                 if (sum + cur <= 0) {
-                    if (sum > maxSum) {
-                        maxSum = sum;
-                    }
                     sum = 0;
                 } else {
                     sum = sum + cur;
+                    maxSum = Math.max(maxSum, sum);
                 }
             }
         }
-        if (sum > maxSum) {
-            maxSum = sum;
-        }
-        result = maxSum >= 0 ? maxSum : maxNegative;
-        return result;
+        maxSum = Math.max(maxSum, sum);
+        return maxSum >= 0 ? maxSum : maxNegative;
     }
 
-    //动态规划的思路
-    //记录以每个index结尾的subarray最大的和
+
     public int _30_FindGreatestSumOfSubArray2(int[] array) {
         int sumMax = array[0];
         for (int i = 1; i < array.length; i++) {
@@ -966,10 +1264,19 @@ public class JianZhi {
         return sumMax;
     }
 
-    //归纳法
-    //依次归纳个位，十位，百位总结出合理的通用公式
-    //https://www.nowcoder.com/questionTerminal/bd7f978302044eee894445e244c7eee6?f=discussion
-    //用户 Duqcuid 总结的好棒
+    /**
+     * --题目描述--
+     * 求出1~13的整数中1出现的次数,并算出100~1300的整数中1出现的次数？为此他特别数了一下
+     * 1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。
+     * ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数
+     * （从1 到 n 中1出现的次数）。
+     * <p>
+     * --解题思路--
+     * 归纳法
+     * 依次归纳个位，十位，百位总结出合理的通用公式
+     * https://www.nowcoder.com/questionTerminal/bd7f978302044eee894445e244c7eee6?f=discussion
+     * 用户 Duqcuid 总结的好棒
+     */
     public int _31_NumberOf1Between1AndN_Solution(int n) {
         if (n == 0) return 0;
         int count = 0;
@@ -989,9 +1296,17 @@ public class JianZhi {
         return count;
     }
 
+    /**
+     * --题目描述--
+     * 输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的
+     * 一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+     * <p>
+     * --解题思路--
+     * 重新定义Comparator来进行对数组里数字的排序，让两者组合成为的新数字最小为条件，
+     * 来判断O1，O2应该怎么做相对应的排序。
+     */
     public String _32_PrintMinNumber(int[] numbers) {
-        Integer[] numbersWapper = Arrays.stream(numbers)
-                .boxed().toArray(Integer[]::new);
+        Integer[] numbersWapper = Arrays.stream(numbers).boxed().toArray(Integer[]::new);
         //重写Comparator来按题目定义排序数字
         Arrays.sort(numbersWapper, new Comparator<Integer>() {
             @Override
@@ -1011,10 +1326,15 @@ public class JianZhi {
     }
 
     /**
+     * --题目描述--
+     * 把只包含质因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为
+     * 它包含质因子7。 习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。
+     * <p>
+     * --解题思路--
      * https://www.nowcoder.com/questionTerminal/6aa9e04fc3794f68acf8778237ba065b?f=discussion
      * 用户 "事无巨细，悉究本末" 的答案C++版本的改写
      * 思路就是 丑数 = 2^x * 3^y * 5^z , 即丑数*2， *3， *5都会生成新丑数
-     * 所以维系3个队列来存储每一个新丑数*2，*3，*5 所生成的潜在丑数，
+     * 所以维护3个队列来存储每一个新丑数*2，*3，*5 所生成的潜在丑数，
      * 每一个独立队列都是递增，所以只需要比较队列最前端找出最小的潜在丑数加入最终队列即可，
      * 但队列之间会有重复，需要同时弹出。
      * 在实现时，通过改变3个指针在在最终丑数队列上的位置来表示3个队列到了哪个位置，不需要存储3个队列
@@ -1035,6 +1355,7 @@ public class JianZhi {
             int fiveUgly = uglyNums.get(p3) * 5;
             int nextNum = Math.min(twoUgly, Math.min(threeUgly, fiveUgly));
             //改变指针位置，指向3个不同的位置,代替数组(代表每个数组的头元素)
+            //最新的丑数对应的队列肯定是会把指针指向最终数组的末尾
             if (nextNum == twoUgly) p1++;
             if (nextNum == threeUgly) p2++;
             if (nextNum == fiveUgly) p3++;
@@ -1043,6 +1364,15 @@ public class JianZhi {
         return uglyNums.get(index - 1);
     }
 
+    /**
+     * --题目描述--
+     * 在一个字符串(0<=字符串长度<=10000，全部由字母组成)中找到第一个只出现一次的字符,并返
+     * 回它的位置, 如果没有则返回 -1（需要区分大小写）.
+     * <p>
+     * --解题思路--
+     * 1.hash的思想，先存出现次数，找到第一个一次的元素，然后遍历str返回位置
+     * 2.另一种小变形，先存出现次数，直接遍历str找到对应char在hash中value为1
+     */
     public int _34_FirstNotRepeatingChar(String str) {
         char[] strArray = str.toCharArray();
         //hash的思想，先存出现次数，找到第一个一次的元素，然后遍历str返回位置
@@ -1070,6 +1400,12 @@ public class JianZhi {
     }
 
     /**
+     * --题目描述--
+     * 在数组中的两个数字，如果前面一个数字大于后面的数字，则这两个数字组成一个逆序对。输入一
+     * 个数组,求出这个数组中的逆序对的总数P。并将P对1000000007取模的结果输出。
+     * 即输出P%1000000007
+     * <p>
+     * --解题思路--
      * 基于Bottom-up的归并排序，只添加两行，其余不变
      * 原始归并排序代码在自己的Blog中
      * https://ryefield.github.io/algorithm/Sorting-Algorithm-Comparison-Sorts/#merge-sort%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F
@@ -1109,6 +1445,10 @@ public class JianZhi {
     }
 
     /**
+     * --题目描述--
+     * 输入两个链表，找出它们的第一个公共结点。
+     * <p>
+     * --解题思路--
      * leetcode原题 https://leetcode.com/problems/intersection-of-two-linked-lists/
      * 简单解法，无需在意长度
      * 长度相同有公共结点，第一次就遍历到；没有公共结点，走到尾部NULL相同结束，返回NULL
@@ -1128,6 +1468,10 @@ public class JianZhi {
     }
 
     /**
+     * --题目描述--
+     * 统计一个数字在排序数组中出现的次数。
+     * <p>
+     * --解题思路--
      * 排序数组查找元素，考察Binary Search的变形，O(log n)复杂度
      */
     public int _37_GetNumberOfK(int[] array, int k) {
@@ -1141,7 +1485,7 @@ public class JianZhi {
     }
 
     //递归
-    public int getFirstK(int[] array, int lo, int hi, int k) {
+    private int getFirstK(int[] array, int lo, int hi, int k) {
         if (lo <= hi) {
             int mid = (lo + hi) / 2;
             if (array[mid] < k) {
@@ -1158,7 +1502,7 @@ public class JianZhi {
     }
 
     //迭代
-    public int getLastK(int[] array, int lo, int hi, int k) {
+    private int getLastK(int[] array, int lo, int hi, int k) {
         int mid = (lo + hi) / 2;
         while (lo <= hi) {
             if (array[mid] < k) {
@@ -1176,6 +1520,11 @@ public class JianZhi {
     }
 
     /**
+     * --题目描述--
+     * 输入一棵二叉树，求该树的深度。从根结点到叶结点依次经过的结点（含根、叶结点）形成树的
+     * 一条路径，最长路径的长度为树的深度。
+     * <p>
+     * --解题思路--
      * Leetcode原题https://leetcode.com/problems/maximum-depth-of-binary-tree/
      * 递归解法或者Level Order层次遍历
      */
@@ -1201,12 +1550,18 @@ public class JianZhi {
         return depth;
     }
 
-    //自底向上
+    /**
+     * --题目描述--
+     * 输入一棵二叉树，判断该二叉树是否是平衡二叉树。
+     * <p>
+     * --解题思路--
+     * 自底向上
+     */
     public boolean _39_IsBalanced_Solution(TreeNode root) {
         return getDepth(root) == -1;
     }
 
-    public int getDepth(TreeNode root) {
+    private int getDepth(TreeNode root) {
         if (root == null) return 0;
         int leftDepth = getDepth(root.left);
         //如果遇到子节点不符合的，直接返回-1
@@ -1218,11 +1573,19 @@ public class JianZhi {
                 1 + Math.max(leftDepth, rightDepth);
     }
 
-    //num1,num2分别为长度为1的数组。传出参数
-    //将num1[0],num2[0]设置为返回结果
-    //考察异或？数字自己和自己异或为0..
-    //自己的解法就是简单的HashSet
-    public void _40_FindNumsAppearOnce(int[] array, int num1[], int num2[]) {
+    /**
+     * --题目描述--
+     * 一个整型数组里除了两个数字之外，其他的数字都出现了两次。
+     * 请写程序找出这两个只出现一次的数字。
+     * <p>
+     * --解题思路--
+     * num1,num2分别为长度为1的数组。传出参数
+     * 将num1[0],num2[0]设置为返回结果
+     * 考察异或？数字自己和自己异或为0..，不同数字异或二进制当中肯定有1位是1，根据这1位1将
+     * 原数组分成两个数组，再分别异或，最后两个数组最后留下的元素就是两个只出现一次的数字
+     * 自己的解法就是简单的HashSet
+     */
+    public void _40_FindNumsAppearOnce(int[] array, int[] num1, int[] num2) {
         Set<Integer> nums = new HashSet<>();
         for (int value : array) {
             if (!nums.contains(value)) {
@@ -1242,18 +1605,30 @@ public class JianZhi {
         }
     }
 
-    //双指针思想
+    /**
+     * --题目描述--
+     * 小明很喜欢数学,有一天他在做数学作业时,要求计算出9~16的和,他马上就写出了正确答案是100。
+     * 但是他并不满足于此,他在想究竟有多少种连续的正数序列的和为100(至少包括两个数)。没多久,
+     * 他就得到另一组连续正数和为100的序列:18,19,20,21,22。现在把问题交给你,你能不能也很快
+     * 的找出所有和为S的连续正数序列? Good Luck!
+     * 输出所有和为S的连续正数序列。序列内按照从小至大的顺序，序列间按照开始数字从小到大的顺序
+     * <p>
+     * --解题思路--
+     * 双指针思想
+     */
     public ArrayList<ArrayList<Integer>> _41_FindContinuousSequence(int sum) {
         ArrayList<ArrayList<Integer>> res = new ArrayList<>();
         int lo = 1;
         int hi = 2;
         while (lo < hi) {
+            //求和公式
             int curSum = (lo + hi) * (hi - lo + 1) / 2;
             if (curSum > sum) {
                 lo++;
             } else if (curSum < sum) {
                 hi++;
             } else {
+                //相等时候，将区间内所有数字加入最后结果集合，但是lo指针只往前移动一位
                 ArrayList<Integer> cur = new ArrayList<>();
                 for (int i = lo; i <= hi; i++) {
                     cur.add(i);
@@ -1265,6 +1640,21 @@ public class JianZhi {
         return res;
     }
 
+    /**
+     * --题目描述--
+     * 输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S，如果有多对
+     * 数字的和等于S，输出两个数的乘积最小的。
+     * <p>
+     * --解题思路--
+     * 首位双指针，乘积最小的，相距也最远，所以就是第一组遇到的数字
+     * 证明：
+     * 作者：马客(Mark)
+     * 链接：https://www.nowcoder.com/questionTerminal/390da4f7a00f44bea7c2f3d19491311b?f=discussion
+     * 来源：牛客网
+     * 找到的第一组（相差最大的）就是乘积最小的。可以这样证明：考虑x+y=C（C是常数），x*y的大小。
+     * 不妨设y>=x，y-x=d>=0，即y=x+d, 2x+d=C, x=(C-d)/2, x*y=x(x+d)=(C-d)(C+d)/4=(C^2-d^2)/4，
+     * 也就是x*y是一个关于变量d的二次函数，对称轴是y轴，开口向下。d是>=0的，d越大, x*y也就越小。
+     */
     public ArrayList<Integer> _42_FindNumbersWithSum(int[] array, int sum) {
         int lo = 0;
         int hi = array.length - 1;
@@ -1284,6 +1674,18 @@ public class JianZhi {
         return res;
     }
 
+    /**
+     * --题目描述--
+     * 汇编语言中有一种移位指令叫做循环左移（ROL），现在有个简单的任务，就是用字符串模拟这个
+     * 指令的运算结果。对于一个给定的字符序列S，请你把其循环左移K位后的序列输出。例如，字符
+     * 序列S=”abcXYZdef”,要求输出循环左移3位后的结果，即“XYZdefabc”。
+     * <p>
+     * --解题思路--
+     * 用了额外的空间解决
+     * 剑指原理:利用字符串翻转。
+     * 假设字符串abcdef，n=3，设X=abc，Y=def，所以字符串可以表示成XY，如题干，问如何求得YX。
+     * 假设X的翻转为XT，XT=cba，同理YT=fed，那么YX=(XTYT)T，三次翻转后可得结果。
+     */
     public String _43_LeftRotateString(String str, int n) {
         if (str.length() < n) return "";
         StringBuilder sb = new StringBuilder();
@@ -1297,7 +1699,17 @@ public class JianZhi {
     }
 
 
-    //用了Java的方式处理,题目本意可能是要求反转每个word，再反转整个句子。
+    /**
+     * --题目描述--
+     * 牛客最近来了一个新员工Fish，每天早晨总是会拿着一本英文杂志，写些句子在本子上。同事Cat
+     * 对Fish写的内容颇感兴趣，有一天他向Fish借来翻看，但却读不懂它的意思。
+     * 例如，“student. a am I”。后来才意识到，这家伙原来把句子单词的顺序翻转了，正确的句子
+     * 应该是“I am a student.”。Cat对一一的翻转这些单词顺序可不在行，你能帮助他么？
+     * <p>
+     * --解题思路--
+     * 1.用了Java的方式处理
+     * 2.题目本意可能是要求反转每个word，再反转整个句子。
+     */
     public String _44_ReverseSentence1(String str) {
         if (str.trim().equals("")) {
             return str;
@@ -1333,7 +1745,7 @@ public class JianZhi {
         return String.valueOf(strArray);
     }
 
-    public void swapCharInterval(char[] array, int startIndex, int endIndex) {
+    private void swapCharInterval(char[] array, int startIndex, int endIndex) {
         while (startIndex < endIndex) {
             char temp = array[startIndex];
             array[startIndex++] = array[endIndex];
@@ -1341,6 +1753,20 @@ public class JianZhi {
         }
     }
 
+    /**
+     * --题目描述--
+     * LL今天心情特别好,因为他去买了一副扑克牌,发现里面居然有2个大王,2个小王(一副牌原本是54
+     * 张^_^)...他随机从中抽出了5张牌,想测测自己的手气,看看能不能抽到顺子,如果抽到的话,他决
+     * 定去买体育彩票,嘿嘿！！“红心A,黑桃3,小王,大王,方片5”,“Oh My God!”不是顺子.....LL
+     * 不高兴了,他想了想,决定大\小 王可以看成任何数字,并且A看作1,J为11,Q为12,K为13。上面的
+     * 5张牌就可以变成“1,2,3,4,5”(大小王分别看作2和4),“So Lucky!”。LL决定去买体育彩票啦。
+     * 现在,要求你使用这幅牌模拟上面的过程,然后告诉我们LL的运气如何，如果牌能组成顺子就输出
+     * true，否则就输出false。为了方便起见,你可以认为大小王是0。
+     * <p>
+     * --解题思路--
+     * 总范围为1-14，且大小王可算作任意值（输入为0），则说明找到输入数组里除了大小王（0）之
+     * 外的最大值，最小值，最大值-最小值 < 5则证明为连续（不得有重复值）
+     */
     public boolean _45_isContinuous(int[] numbers) {
         if (numbers.length < 5) return false;
         int[] allNums = new int[14];
@@ -1349,7 +1775,7 @@ public class JianZhi {
         for (int num : numbers) {
             //略过大小王
             if (num != 0) {
-                //更新头尾index
+                //更新头尾index（找最大值，最小值）
                 startIndex = Math.min(num, startIndex);
                 endIndex = Math.max(num, endIndex);
                 if (allNums[num] == 0) {
@@ -1366,9 +1792,21 @@ public class JianZhi {
 
 
     /**
+     * --题目描述--
+     * 每年六一儿童节,牛客都会准备一些小礼物去看望孤儿院的小朋友,今年亦是如此。HF作为牛客的
+     * 资深元老,自然也准备了一些小游戏。其中,有个游戏是这样的:首先,让小朋友们围成一个大圈。
+     * 然后,他随机指定一个数m,让编号为0的小朋友开始报数。每次喊到m-1的那个小朋友要出列唱首
+     * 歌,然后可以在礼品箱中任意的挑选礼物,并且不再回到圈中,从他的下一个小朋友开始,
+     * 继续0...m-1报数....这样下去....直到剩下最后一个小朋友,可以不用表演,并且拿到牛客名贵
+     * 的“名侦探柯南”典藏版(名额有限哦!!^_^)。请你试着想下,哪个小朋友会得到这份礼品呢？
+     * (注：小朋友的编号是从0到n-1) 如果没有小朋友，请返回-1
+     * <p>
+     * --解题思路--
      * 约瑟夫问题 即由n个人坐成一圈，按顺时针由1开始给他们编号。然后由第一个人开始报数，
      * 数到m的人出局。现在需要求的是最后一个出局的人的编号。
-     * 解法，一种是数学推导，得出递推公式;第二种是用数组模拟弹出。
+     * 解法，
+     * 1.一种是数学推导，得出递推公式
+     * 2. 第二种是用数组模拟弹出。
      *
      * @param n n个人
      * @param m 由第一个人开始报数，数到m的人出局。
@@ -1402,19 +1840,33 @@ public class JianZhi {
         return people.get(0);
     }
 
-    //巧用逻辑与的短路性质
+    /**
+     * --题目描述--
+     * 求1+2+3+...+n，要求不能使用乘除法、for、while、if、else、switch、case等关键字及
+     * 条件判断语句（A?B:C）。
+     * <p>
+     * --解题思路--
+     * 巧用逻辑与的短路性质
+     */
     public int _47_Sum_Solution(int n) {
         int sum = n;
         boolean flag = (n > 1) && ((sum = _47_Sum_Solution(n - 1) + sum) > 0);
         return sum;
     }
 
-    //巧用位运算,用两数相与和两数异或来模拟两数和运算，
-    //两数相与（&），并左移，相当于求进位；两数异或，相当于忽略进位的和
-    //不断进行相与和异或运算，直到进位值为0，运算结束
+    /**
+     * --题目描述--
+     * 写一个函数，求两个整数之和，要求在函数体内不得使用+、-、*、/四则运算符号。
+     * <p>
+     * --解题思路--
+     * 巧用位运算,用两数相与和两数异或来模拟两数和运算，
+     * 两数相与（&），二进制每一位都是与操作，并左移，相当于求进位；
+     * 两数异或，相当于忽略进位的和
+     * 不断进行相与和异或运算，直到进位值为0，运算结束（每一步两个二进制数和都是最终答案）
+     */
     public int _48_Add(int num1, int num2) {
-        int next = (num1 & num2) << 1;
-        int cur = num1 ^ num2;
+        int next = (num1 & num2) << 1; //进位值
+        int cur = num1 ^ num2; //当前值
         num1 = next;
         num2 = cur;
         while (num1 != 0) {
@@ -1426,6 +1878,15 @@ public class JianZhi {
         return cur;
     }
 
+    /**
+     * --题目描述--
+     * 将一个字符串转换成一个整数(实现Integer.valueOf(string)的功能，但是string不符合数
+     * 字要求时返回0)，要求不能使用字符串转换整数的库函数。
+     * 数值为0或者字符串不是一个合法的数值则返回0。
+     * <p>
+     * --解题思路--
+     * 利用了ASCII Table，数字0-9在对应的Char是48-57
+     */
     public int _49_StrToInt(String str) {
         if (str.trim().equals("")) return 0;
         boolean positive = true;
@@ -1554,11 +2015,11 @@ public class JianZhi {
         //iterative the matrix
         for (int i = 1; i <= patternLength; i++) {
             for (int j = 1; j <= stringLength; j++) {
-                //当前pattern为'.'，肯定是要比之前长度+1
                 if (pattern[i - 1] == '.') {
+                    //当前pattern为'.'，肯定是要比之前长度+1
                     lenMatrix[i][j] = lenMatrix[i - 1][j - 1] + 1;
-                    //当前Pattern为'*',分4种情况考虑
                 } else if (pattern[i - 1] == '*') {
+                    //当前Pattern为'*',分4种情况考虑
                     //x* only counts as empty，之前的Pattern不为'.'，且上一个字符不匹配
                     if (pattern[i - 2] != str[j - 1] && pattern[i - 2] != '.') {
                         lenMatrix[i][j] = lenMatrix[i - 2][j];
@@ -1577,8 +2038,8 @@ public class JianZhi {
                             lenMatrix[i][j] = lenMatrix[i - 2][j];
                         }
                     }
-                    //当前Pattern为普通字符
                 } else {
+                    //当前Pattern为普通字符
                     if (pattern[i - 1] == str[j - 1]) {
                         lenMatrix[i][j] = lenMatrix[i - 1][j - 1] + 1;
                     }
@@ -1614,9 +2075,7 @@ public class JianZhi {
      * <p>
      * --解题思路--
      * LinkedHashMap按添加顺序存储元素,最后遍历到第一个value为1为结果
-     * <p>
-     * 还可以用一个队列来存储当前情况下的FirstAppearingOnce的元素，每次添加的时候，不断弹出
-     * 队列首位的元素，让队列首位的元素保持为最终结果。
+     * 因为是字符，所以也可以创建一个256长度的array来存出现次数
      */
     Map<Character, Integer> map = new LinkedHashMap<>();
 
@@ -1741,7 +2200,7 @@ public class JianZhi {
      * 1.递归
      * 2.迭代,BFS的思路，同一层镜像位置同时入队，同时出队
      */
-    boolean _58_isSymmetrical(TreeNode pRoot) {
+    public boolean _58_isSymmetrical(TreeNode pRoot) {
         if (pRoot == null) return false;
         Queue<TreeNode> level = new LinkedList<>();
         level.offer(pRoot.left);
@@ -1876,7 +2335,7 @@ public class JianZhi {
             }
         }
         //返回值中删除最后的全为null的那一层节点
-        return sb.delete(sb.length() - 2*finalLevelSize, sb.length()).toString();
+        return sb.delete(sb.length() - 2 * finalLevelSize, sb.length()).toString();
     }
 
     public TreeNode _61_Deserialize(String str) {
@@ -1886,13 +2345,13 @@ public class JianZhi {
         for (int i = 0; i < value.length; i++) {
             if (!value[i].equals("#")) {
                 nodeArray[i] = new TreeNode(Integer.parseInt(value[i]));
-            }else{
+            } else {
                 nodeArray[i] = null;
             }
         }
         //根据index之间关系将节点之间关系进行连接
         for (int j = 0; j <= (value.length - 3) / 2; j++) {
-            if(nodeArray[j] != null){
+            if (nodeArray[j] != null) {
                 int leftIndex = 2 * j + 1;
                 int rightIndex = 2 * j + 2;
                 nodeArray[j].left = nodeArray[leftIndex];
@@ -2018,7 +2477,7 @@ public class JianZhi {
             //加入自己的下标
             qmax.addLast(i);
             //判断队首元素是否过期
-            if (qmax.peekFirst() == i - size) {
+            if (qmax.peekFirst() <= i - size) {
                 qmax.pollFirst();
             }
             //向result列表中加入元素
