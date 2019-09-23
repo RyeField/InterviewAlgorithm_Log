@@ -2075,7 +2075,9 @@ public class JianZhi {
      * <p>
      * --解题思路--
      * LinkedHashMap按添加顺序存储元素,最后遍历到第一个value为1为结果
-     * 因为是字符，所以也可以创建一个256长度的array来存出现次数
+     * 因为是字符Character(16bits，0-65536)
+     * Java采用Unicode编码集--其中包括了ASCII(0-127)和别的Characters
+     * 在本题可以创建一个128位长度的array来存出现次数（ASCII character table在本地中足够用）
      */
     Map<Character, Integer> map = new LinkedHashMap<>();
 
@@ -2591,5 +2593,30 @@ public class JianZhi {
             }
             return sum <= threshold;
         }
+    }
+
+    /**
+     * --题目描述--
+     * 给你一根长度为n的绳子，请把绳子剪成m段（m、n都是整数，n>1并且m>1），每段绳子的长度记
+     * 为k[0],k[1],...,k[m]。请问k[0]xk[1]x...xk[m]可能的最大乘积是多少？例如，当绳子的
+     * 长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+     * <p>
+     * --解题思路--
+     * 动态规划思想，因为必须截断成2段以上，长度为2，3的情况单独考虑（自己列了几个例子后总结
+     * 出的情况），后面的情况可以统一考虑。
+     */
+    public int _67_cutRope(int target) {
+        int[] res = new int[target + 1];
+        if(target == 2) return 1;
+        if(target == 3) return 2;
+        res[1] = 1;
+        res[2] = 2;
+        res[3] = 3;
+        for (int i = 2; i <= target; i++) {
+            for (int j = 1; j <= i/2; j++) {
+                res[i] = Math.max(res[i], res[j]*res[i-j]);
+            }
+        }
+        return res[target];
     }
 }
